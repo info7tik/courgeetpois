@@ -1,0 +1,9 @@
+<button (click)="toggleMenu()">{{ showMenu ? 'Hide' : 'Show' }} Menu</button>
+
+<nav [class.show]="showMenu">
+    <ul>
+        <li><a routerLink="/seed-list" (click)="toggleMenu()">Graines</a></li>
+        <li><a routerLink="/task-list" (click)="toggleMenu()">Tâches</a></li>
+    </ul>
+  </nav>
+  <router-outlet></router-outlet>
