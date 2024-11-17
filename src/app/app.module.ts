@@ -6,13 +6,16 @@ import { provideRouter, Routes } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MenuComponent } from './menu/menu.component';
+import { SeedEditorComponent } from './seed-editor/seed-editor.component';
 import { SeedListComponent } from './seed-list/seed-list.component';
 import { TaskEditorComponent } from './task-editor/task-editor.component';
 import { TaskListComponent } from './task-list/task-list.component';
 
 const routes: Routes = [
     { path: 'task-list', component: TaskListComponent },
+    { path: 'task-editor', component: TaskEditorComponent },
     { path: 'seed-list', component: SeedListComponent },
+    { path: 'seed-editor', component: SeedEditorComponent },
   ];
 
 
@@ -23,6 +26,7 @@ const routes: Routes = [
     TaskListComponent,
     MenuComponent,
     SeedListComponent,
+    SeedEditorComponent,
   ],
   imports: [
     BrowserModule,

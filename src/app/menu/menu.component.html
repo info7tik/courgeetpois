@@ -2,8 +2,10 @@
 
 <nav [class.show]="showMenu">
     <ul>
-        <li><a routerLink="/seed-list" (click)="toggleMenu()">Graines</a></li>
-        <li><a routerLink="/task-list" (click)="toggleMenu()">Tâches</a></li>
+        <li><a routerLink="/seed-list" (click)="toggleMenu()">Liste des graines</a></li>
+        <li><a routerLink="/task-list" (click)="toggleMenu()">Liste des tâches</a></li>
+        <li><a routerLink="/seed-editor" (click)="toggleMenu()">Ajout de graines</a></li>
+        <li><a routerLink="/task-editor" (click)="toggleMenu()">Ajout de tâches</a></li>
     </ul>
-  </nav>
-  <router-outlet></router-outlet>
+</nav>
+<router-outlet></router-outlet>
