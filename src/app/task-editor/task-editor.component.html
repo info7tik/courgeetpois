@@ -1,24 +1,24 @@
 <div>
-    <h2>Add a Task</h2>
-    <form (ngSubmit)="onSubmit()">
-        <label for="taskName">Task Name:</label>
-        <input type="text" id="taskName" [(ngModel)]="taskName" name="taskName" required>
-        <label for="previousTaskId">Previous Task ID (optional):</label>
-        <input type="number" id="previousTaskId" [(ngModel)]="previousTaskId" name="previousTaskId">
-        <button type="submit">{{ selectedTaskId ? 'Update' : 'Add' }}</button>
-    </form>
+  <h2>Add a Task</h2>
+  <form (ngSubmit)="onSubmit()">
+    <label for="taskName">Task Name:</label>
+    <input type="text" id="taskName" [(ngModel)]="taskName" name="taskName" required>
+    <label for="previousTaskId">Previous Task ID (optional):</label>
+    <input type="number" id="previousTaskId" min=1 [(ngModel)]="previousTaskId" name="previousTaskId">
+    <button type="submit">{{ selectedTaskId ? 'Update' : 'Add' }}</button>
+  </form>
 
-    <div *ngIf="message" class="message">{{ message }}</div>
-    <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+  <div *ngIf="message" class="message">{{ message }}</div>
+  <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
 
-    <h3>Task List</h3>
-    <ul>
-        <ng-container *ngFor="let task of tasks">
-            <li (click)="loadTask(task)" style="cursor: pointer;">
-                <strong>Previous Task ID: {{ task.previousTaskId }}</strong>
-                <br>
-                {{ task.id }}: {{ task.name }}
-            </li>
-        </ng-container>
-    </ul>
+  <h3>Task List</h3>
+  <ul>
+    <ng-container *ngFor="let task of tasks">
+      <li (click)="loadTask(task)" style="cursor: pointer;">
+        <strong>Previous Task ID: {{ task.previousTaskId }}</strong>
+        <br>
+        {{ task.id }}: {{ task.name }}
+      </li>
+    </ng-container>
+  </ul>
 </div>

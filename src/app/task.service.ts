@@ -1,67 +1,72 @@
 import { Injectable } from '@angular/core';
 import { Task } from './task';
 
+type PreviousTaskId = number;
+
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
 export class TaskService {
-    private tasks: Map<number, Task> = new Map();
-    private storageKey = 'tasks';
+  private tasks: Task[] = [];
+  private storageKey = 'tasks';
 
-    constructor() {
-        this.loadTasksFromLocalStorage();
+  constructor() {
+    this.loadTasksFromLocalStorage();
+  }
+
+
+  getTaskById(taskId: number): Task {
+    const foundTask = this.tasks.find(task => task.id === taskId);
+    if (foundTask !== undefined) {
+      return foundTask;
     }
+    throw Error(`No task with ID ${taskId}`);
+  }
 
+  getTasks(): Task[] {
+    return this.tasks;
+  }
 
-    getTasks(): Task[] {
-        return Array.from(this.tasks.values());
+  hasTask(id: number): boolean {
+    try {
+      this.getTaskById(id);
+      return true;
+    } catch {
+      return false;
     }
+  }
 
-    addTask(task: Task): void {
-        this.tasks.set(task.id, task);
-        this.saveTasksToLocalStorage();
+  addTask(task: Task): void {
+    if (this.hasTask(task.id)) {
+      throw Error(`Task with ID ${task.id} already exists`);
     }
+    this.tasks.push(task);
+    this.saveTasksToLocalStorage();
+  }
 
-    updateTask(task: Task): void {
-        if (this.tasks.has(task.id)) {
-            this.tasks.set(task.id, task);
-            this.saveTasksToLocalStorage();
-        }
+  updateTask(task: Task): void {
+    this.tasks = this.tasks.filter(existing => existing.id !== task.id);
+    this.tasks.push(task);
+    this.saveTasksToLocalStorage();
+  }
+
+  deleteTask(id: number): void {
+    this.tasks = this.tasks.filter(existing => existing.id !== id);
+    this.saveTasksToLocalStorage();
+  }
+
+  getNextId(): number {
+    return this.tasks.length + 1;
+  }
+
+  private loadTasksFromLocalStorage(): void {
+    const storedTasks = localStorage.getItem(this.storageKey);
+    if (storedTasks) {
+      this.tasks = JSON.parse(storedTasks) as Task[];
     }
+  }
 
-    deleteTask(id: number): void {
-        if (this.tasks.has(id)) {
-            this.tasks.delete(id)
-        }
-        this.saveTasksToLocalStorage();
-    }
-
-    getNextId(): number {
-        const ids = Array.from(this.tasks.keys());
-        return ids.length > 0 ? Math.max(...ids) + 1 : 1;
-    }
-
-    getSortedTasks(): Task[] {
-        const tasksWithoutPrevious = Array.from(this.tasks.values()).filter(task => task.previousTaskId === undefined);
-        const tasksWithPrevious = Array.from(this.tasks.values()).filter(task => task.previousTaskId !== undefined);
-
-        return [...tasksWithoutPrevious, ...this.topologicalSort(tasksWithPrevious)];
-    }
-
-    private topologicalSort(tasks: Task[]): Task[] {
-        return tasks;
-    }
-
-    private loadTasksFromLocalStorage(): void {
-        const storedTasks = localStorage.getItem(this.storageKey);
-        if (storedTasks) {
-            const tasksArray = JSON.parse(storedTasks) as Task[];
-            tasksArray.forEach(task => this.tasks.set(task.id, task));
-        }
-    }
-
-    private saveTasksToLocalStorage(): void {
-        const tasksArray = Array.from(this.tasks.values());
-        localStorage.setItem(this.storageKey, JSON.stringify(tasksArray));
-    }
+  private saveTasksToLocalStorage(): void {
+    localStorage.setItem(this.storageKey, JSON.stringify(this.tasks));
+  }
 }
