@@ -24,7 +24,19 @@ export class TaskService {
   }
 
   getTasks(): Task[] {
-    return this.tasks;
+    let result = this.tasks.filter((task) => task.previousTaskId == -1);
+    if (result.length === 0) {
+      throw Error("No detected first tasks: (missing tasks with previousId -1");
+    }
+    let oldResultSize = 0;
+    let newTaskIds = result.map(t => t.id);
+    while (oldResultSize < result.length) {
+      oldResultSize = result.length;
+      const newTasks = this.tasks.filter(t => newTaskIds.includes(t.previousTaskId));
+      newTaskIds = newTasks.map(t => t.id);
+      result = [...result, ...newTasks];
+    }
+    return result;
   }
 
   hasTask(id: number): boolean {
