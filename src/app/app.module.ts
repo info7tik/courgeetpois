@@ -12,11 +12,11 @@ import { TaskEditorComponent } from './task-editor/task-editor.component';
 import { TaskListComponent } from './task-list/task-list.component';
 
 const routes: Routes = [
-    { path: 'task-list', component: TaskListComponent },
-    { path: 'task-editor', component: TaskEditorComponent },
-    { path: 'seed-list', component: SeedListComponent },
-    { path: 'seed-editor', component: SeedEditorComponent },
-  ];
+  { path: 'task-list', component: TaskListComponent },
+  { path: 'task-editor', component: TaskEditorComponent },
+  { path: 'seed-list', component: SeedListComponent },
+  { path: 'seed-editor', component: SeedEditorComponent },
+];
 
 
 @NgModule({

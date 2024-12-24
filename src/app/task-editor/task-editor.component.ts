@@ -8,12 +8,15 @@ import { TaskService } from '../task.service';
   styleUrl: './task-editor.component.css'
 })
 export class TaskEditorComponent {
+  readonly NO_SELECTED_TASK = -1;
   taskName: string = '';
-  previousTaskId: number | null = null;
+  previousTaskId: number = -1;
+  taskMonth: number = 0;
+  taskDay: number = 0;
   tasks: Task[] = [];
   message: string = '';
   errorMessage: string = '';
-  selectedTaskId: number | null = null;
+  selectedTaskId: number = this.NO_SELECTED_TASK;
 
   constructor(private taskService: TaskService) {
     this.tasks = this.taskService.getTasks();
@@ -22,14 +25,13 @@ export class TaskEditorComponent {
   onSubmit(): void {
     try {
       if (this.taskName.trim()) {
-        const previousTaskId = getPreviousTaskId(this.previousTaskId);
-        if (!checkPreviousTaskExists(this, previousTaskId)) {
-          throw Error(`Previous task ${previousTaskId} does not exist`);
+        if (!checkPreviousTaskExists(this, this.previousTaskId)) {
+          throw Error(`Previous task ${this.previousTaskId} does not exist`);
         }
         const updatedTask: Task = {
-          id: this.selectedTaskId ?? this.taskService.getNextId(),
+          id: this.selectedTaskId === this.NO_SELECTED_TASK ? this.taskService.getNextId() : this.selectedTaskId,
           name: this.taskName,
-          previousTaskId: previousTaskId
+          previousTaskId: this.previousTaskId
         };
         if (this.selectedTaskId !== null) {
           this.taskService.updateTask(updatedTask);
@@ -37,9 +39,7 @@ export class TaskEditorComponent {
           this.taskService.addTask(updatedTask);
         }
         this.tasks = this.taskService.getTasks();
-        this.taskName = '';
-        this.previousTaskId = null;
-        this.selectedTaskId = null;
+        this.clearForm();
         this.showMessage('Task added/updated successfully!');
       } else {
         this.showErrorMessage("Please, provide task name");
@@ -47,14 +47,6 @@ export class TaskEditorComponent {
     } catch (error) {
       if (error instanceof (Error)) {
         this.showErrorMessage(error.message);
-      }
-    }
-
-    function getPreviousTaskId(formPreviousTaskId: number | null) {
-      if (formPreviousTaskId === undefined || formPreviousTaskId === null) {
-        return -1;
-      } else {
-        return formPreviousTaskId;
       }
     }
 
@@ -66,6 +58,18 @@ export class TaskEditorComponent {
         return true;
       }
       return false;
+    }
+  }
+
+  private clearForm() {
+    this.taskName = '';
+    this.previousTaskId = this.NO_SELECTED_TASK;
+    this.selectedTaskId = this.NO_SELECTED_TASK;
+  }
+
+  changeButtonLabel() {
+    if (this.selectedTaskId !== this.NO_SELECTED_TASK) {
+      this.clearForm();
     }
   }
 
