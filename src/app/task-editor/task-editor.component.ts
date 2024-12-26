@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Constants } from '../constants';
 import { Task } from '../task';
 import { TaskService } from '../task.service';
 
@@ -8,12 +9,14 @@ import { TaskService } from '../task.service';
   styleUrl: './task-editor.component.css'
 })
 export class TaskEditorComponent {
-  readonly NO_SELECTED_TASK = -1;
+  readonly NO_SELECTED_TASK = Constants.NO_SELECTED_TASK_ID;
+  tasks: Task[] = [];
   taskName: string = '';
-  previousTaskId: number = -1;
+  previousTaskId: number = this.NO_SELECTED_TASK;
   taskMonth: number = 0;
   taskDay: number = 0;
-  tasks: Task[] = [];
+  sincePreviousMonths: number = 0;
+  sincePreviousDays: number = 0;
   message: string = '';
   errorMessage: string = '';
   selectedTaskId: number = this.NO_SELECTED_TASK;
@@ -28,15 +31,17 @@ export class TaskEditorComponent {
         if (!checkPreviousTaskExists(this, this.previousTaskId)) {
           throw Error(`Previous task ${this.previousTaskId} does not exist`);
         }
-        const updatedTask: Task = {
+        const taskData: Task = {
           id: this.selectedTaskId === this.NO_SELECTED_TASK ? this.taskService.getNextId() : this.selectedTaskId,
           name: this.taskName,
+          date: { "month": this.taskMonth, "day": this.taskDay },
+          sincePrevious: { "months": this.sincePreviousMonths, "days": this.sincePreviousDays },
           previousTaskId: this.previousTaskId
         };
         if (this.selectedTaskId !== null) {
-          this.taskService.updateTask(updatedTask);
+          this.taskService.updateTask(taskData);
         } else {
-          this.taskService.addTask(updatedTask);
+          this.taskService.addTask(taskData);
         }
         this.tasks = this.taskService.getTasks();
         this.clearForm();
@@ -65,6 +70,10 @@ export class TaskEditorComponent {
     this.taskName = '';
     this.previousTaskId = this.NO_SELECTED_TASK;
     this.selectedTaskId = this.NO_SELECTED_TASK;
+    this.taskMonth = 0;
+    this.taskDay = 0;
+    this.sincePreviousMonths = 0;
+    this.sincePreviousDays = 0;
   }
 
   changeButtonLabel() {
@@ -77,13 +86,17 @@ export class TaskEditorComponent {
     this.taskName = task.name;
     this.previousTaskId = task.previousTaskId;
     this.selectedTaskId = task.id;
+    this.taskMonth = task.date.month;
+    this.taskDay = task.date.day;
+    this.sincePreviousMonths = task.sincePrevious.months;
+    this.sincePreviousDays = task.sincePrevious.days;
   };
 
   showMessage(message: string): void {
     this.message = message;
     setTimeout(() => {
       this.message = '';
-    }, 3000); // The message will disappear after 3 seconds
+    }, 3000);
   }
 
   showErrorMessage(errorMessage: string): void {
@@ -91,7 +104,6 @@ export class TaskEditorComponent {
     this.message = '';
     setTimeout(() => {
       this.errorMessage = '';
-    }, 3000); // The error message will disappear after 3 seconds
+    }, 3000);
   }
-
 }

@@ -14,12 +14,19 @@
         </option>
       </select>
     </div>
-    <div>
+    <div *ngIf="this.previousTaskId === this.NO_SELECTED_TASK">
       <label>Date:</label>
       <label for="taskMonth">Month</label>
       <input type="number" id="month" min="1" max="12" [(ngModel)]="taskMonth" name="taskMonth">
       <label for="taskDay">Day</label>
       <input type="number" id="day" min="1" max="31" [(ngModel)]="taskDay" name="taskDay">
+    </div>
+    <div *ngIf="this.previousTaskId !== this.NO_SELECTED_TASK">
+      <label>Since previous tasks:</label>
+      <label for="taskMonth">Number of Months</label>
+      <input type="number" id="month" min="0" max="12" [(ngModel)]="sincePreviousMonths" name="sinceMonths">
+      <label for="taskDay">Number of Days</label>
+      <input type="number" id="day" min="0" max="30" [(ngModel)]="sincePreviousDays" name="sinceDays">
     </div>
     <button type="submit">{{ selectedTaskId !== this.NO_SELECTED_TASK ? 'Update' : 'Add' }}</button>
   </form>
@@ -31,9 +38,9 @@
   <ul>
     <ng-container *ngFor="let task of tasks">
       <li (click)="loadTask(task)" style="cursor: pointer;">
-        <strong>Previous Task ID: {{ task.previousTaskId }}</strong>
+        <strong>{{ task.id }}: {{ task.name }}</strong>
         <br>
-        {{ task.id }}: {{ task.name }}
+        Previous Task ID: {{ task.previousTaskId }}
       </li>
     </ng-container>
   </ul>
