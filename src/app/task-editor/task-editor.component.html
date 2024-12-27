@@ -1,35 +1,34 @@
 <div>
   <h2>Add a Task</h2>
-  <form (ngSubmit)="onSubmit()">
-    <div>
-      <label for="taskName">Task Name:</label>
-      <input type="text" id="taskName" [(ngModel)]="taskName" name="taskName" (ngModelChange)="changeButtonLabel()"
-        required>
-    </div>
-    <div>
-      <label for="previousTaskId">Previous Task ID (optional):</label>
-      <select [(ngModel)]="previousTaskId">
-        <option [value]="this.NO_SELECTED_TASK">no previous task</option>
-        <option *ngFor="let t of tasks" value="{{t.id}}" [selected]="previousTaskId===t.id">{{t.id}}: {{t.name}}
-        </option>
-      </select>
-    </div>
-    <div *ngIf="this.previousTaskId === this.NO_SELECTED_TASK">
-      <label>Date:</label>
-      <label for="taskMonth">Month</label>
-      <input type="number" id="month" min="1" max="12" [(ngModel)]="taskMonth" name="taskMonth">
-      <label for="taskDay">Day</label>
-      <input type="number" id="day" min="1" max="31" [(ngModel)]="taskDay" name="taskDay">
-    </div>
-    <div *ngIf="this.previousTaskId !== this.NO_SELECTED_TASK">
-      <label>Since previous tasks:</label>
-      <label for="taskMonth">Number of Months</label>
-      <input type="number" id="month" min="0" max="12" [(ngModel)]="sincePreviousMonths" name="sinceMonths">
-      <label for="taskDay">Number of Days</label>
-      <input type="number" id="day" min="0" max="30" [(ngModel)]="sincePreviousDays" name="sinceDays">
-    </div>
-    <button type="submit">{{ selectedTaskId !== this.NO_SELECTED_TASK ? 'Update' : 'Add' }}</button>
-  </form>
+  <div>
+    <label for="taskName">Task Name:</label>
+    <input type="text" id="taskName" [(ngModel)]="taskName" name="taskName" (ngModelChange)="changeButtonLabel()"
+      required>
+  </div>
+  <div>
+    <label for="previousTaskId">Previous Task ID (optional):</label>
+    <select [(ngModel)]="previousTaskId">
+      <option [value]="this.NO_SELECTED_TASK">no previous task</option>
+      <option *ngFor="let t of tasks" value="{{t.id}}" [selected]="previousTaskId===t.id">{{t.id}}: {{t.name}}
+      </option>
+    </select>
+  </div>
+  <div *ngIf="this.previousTaskId === this.NO_SELECTED_TASK">
+    <label>Date:</label>
+    <label for="taskMonth">Month</label>
+    <input type="number" id="month" min="1" max="12" [(ngModel)]="taskMonth" name="taskMonth">
+    <label for="taskDay">Day</label>
+    <input type="number" id="day" min="1" max="31" [(ngModel)]="taskDay" name="taskDay">
+  </div>
+  <div *ngIf="this.previousTaskId !== this.NO_SELECTED_TASK">
+    <label>Since previous tasks:</label>
+    <label for="taskMonth">Number of Months</label>
+    <input type="number" id="month" min="0" max="12" [(ngModel)]="sincePreviousMonths" name="sinceMonths">
+    <label for="taskDay">Number of Days</label>
+    <input type="number" id="day" min="0" max="30" [(ngModel)]="sincePreviousDays" name="sinceDays">
+  </div>
+  <button (click)="addOrUpdateTask()">{{ selectedTaskId !== this.NO_SELECTED_TASK ? 'Update' : 'Add' }}</button>
+  <button *ngIf="selectedTaskId !== this.NO_SELECTED_TASK" (click)="deleteTask()">Delete</button>
 
   <div *ngIf="message" class="message">{{ message }}</div>
   <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>

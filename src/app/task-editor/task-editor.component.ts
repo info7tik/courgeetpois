@@ -25,7 +25,7 @@ export class TaskEditorComponent {
     this.tasks = this.taskService.getTasks();
   }
 
-  onSubmit(): void {
+  addOrUpdateTask(): void {
     try {
       if (this.taskName.trim()) {
         if (!checkPreviousTaskExists(this, this.previousTaskId)) {
@@ -91,6 +91,13 @@ export class TaskEditorComponent {
     this.sincePreviousMonths = task.sincePrevious.months;
     this.sincePreviousDays = task.sincePrevious.days;
   };
+
+  deleteTask(): void {
+    if (this.selectedTaskId !== this.NO_SELECTED_TASK) {
+      this.taskService.deleteTask(this.selectedTaskId);
+      this.tasks = this.taskService.getTasks();
+    }
+  }
 
   showMessage(message: string): void {
     this.message = message;

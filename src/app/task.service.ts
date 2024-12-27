@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Constants } from './constants';
+import { StorageService } from './storage.service';
 import { Task } from './task';
 
 @Injectable({
@@ -7,10 +8,9 @@ import { Task } from './task';
 })
 export class TaskService {
   private tasks: Task[] = [];
-  private storageKey = 'tasks';
 
-  constructor() {
-    this.loadTasksFromLocalStorage();
+  constructor(private storageService: StorageService) {
+    this.tasks = storageService.loadTasksFromLocalStorage();
   }
 
 
@@ -56,41 +56,21 @@ export class TaskService {
       throw Error(`Task with ID ${task.id} already exists`);
     }
     this.tasks.push(task);
-    this.saveTasksToLocalStorage();
+    this.storageService.saveTasksToLocalStorage(this.tasks);
   }
 
   updateTask(task: Task): void {
     this.tasks = this.tasks.filter(existing => existing.id !== task.id);
     this.tasks.push(task);
-    this.saveTasksToLocalStorage();
+    this.storageService.saveTasksToLocalStorage(this.tasks);
   }
 
   deleteTask(id: number): void {
     this.tasks = this.tasks.filter(existing => existing.id !== id);
-    this.saveTasksToLocalStorage();
+    this.storageService.saveTasksToLocalStorage(this.tasks);
   }
 
   getNextId(): number {
     return this.tasks.length + 1;
-  }
-
-  private loadTasksFromLocalStorage(): void {
-    const storedTasks = localStorage.getItem(this.storageKey);
-    if (storedTasks) {
-      this.tasks = JSON.parse(storedTasks) as Task[];
-      this.tasks = this.keepProperlyConfiguredTasks();
-    }
-  }
-
-  private saveTasksToLocalStorage(): void {
-    localStorage.setItem(this.storageKey, JSON.stringify(this.keepProperlyConfiguredTasks()));
-  }
-
-  private keepProperlyConfiguredTasks(): Task[] {
-    const properTasks = this.tasks.filter(task => task.id !== Constants.NO_SELECTED_TASK_ID);
-    if (properTasks.length !== this.tasks.length) {
-      alert(`error while saving tasks: wrong task ID for ${this.tasks.length - properTasks.length} tasks`);
-    }
-    return properTasks;
   }
 }

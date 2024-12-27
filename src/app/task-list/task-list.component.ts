@@ -3,24 +3,19 @@ import { Task } from '../task';
 import { TaskService } from '../task.service';
 
 @Component({
-    selector: 'app-task-list',
-    templateUrl: './task-list.component.html',
-    styleUrl: './task-list.component.css'
+  selector: 'app-task-list',
+  templateUrl: './task-list.component.html',
+  styleUrl: './task-list.component.css'
 })
 export class TaskListComponent implements OnInit {
-    taskName: string = '';
-    previousTaskId: number | undefined;
-    tasks: Task[] = [];
-    message: string = '';
+  taskName: string = '';
+  previousTaskId: number | undefined;
+  tasks: Task[] = [];
+  message: string = '';
 
-    constructor(private taskService: TaskService) { }
+  constructor(private taskService: TaskService) { }
 
-    ngOnInit(): void {
-        this.tasks = this.taskService.getTasks();
-    }
-
-    deleteTask(id: number): void {
-        this.taskService.deleteTask(id);
-        this.tasks = this.taskService.getTasks();
-    }
+  ngOnInit(): void {
+    this.tasks = this.taskService.getTasks();
+  }
 }
