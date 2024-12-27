@@ -10,7 +10,7 @@ describe("task service", () => {
       "id": id,
       "name": `name${id}`,
       "previousTaskId": Constants.NO_SELECTED_TASK_ID,
-      "date": { "month": 1, "day": 1 },
+      "_date": { "month": 1, "day": 1 },
       "sincePrevious": { "months": 0, "days": 0 }
     };
   }

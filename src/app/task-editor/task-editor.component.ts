@@ -9,77 +9,125 @@ import { TaskService } from '../task.service';
   styleUrl: './task-editor.component.css'
 })
 export class TaskEditorComponent {
-  readonly NO_SELECTED_TASK = Constants.NO_SELECTED_TASK_ID;
+  NO_SELECTED_TASK = Constants.NO_SELECTED_TASK_ID;
   tasks: Task[] = [];
   taskName: string = '';
-  previousTaskId: number = this.NO_SELECTED_TASK;
+  previousTaskId: number = Constants.NO_SELECTED_TASK_ID;
   taskMonth: number = 0;
   taskDay: number = 0;
   sincePreviousMonths: number = 0;
-  sincePreviousDays: number = 0;
+  afterPreviousDays: number = 0;
   message: string = '';
   errorMessage: string = '';
-  selectedTaskId: number = this.NO_SELECTED_TASK;
+  selectedTaskId: number = Constants.NO_SELECTED_TASK_ID;
 
   constructor(private taskService: TaskService) {
     this.tasks = this.taskService.getTasks();
+    this.clearForm();
   }
 
-  addOrUpdateTask(): void {
+  addTask(): void {
     try {
-      if (this.taskName.trim()) {
-        if (!checkPreviousTaskExists(this, this.previousTaskId)) {
-          throw Error(`Previous task ${this.previousTaskId} does not exist`);
-        }
-        const taskData: Task = {
-          id: this.selectedTaskId === this.NO_SELECTED_TASK ? this.taskService.getNextId() : this.selectedTaskId,
-          name: this.taskName,
-          date: { "month": this.taskMonth, "day": this.taskDay },
-          sincePrevious: { "months": this.sincePreviousMonths, "days": this.sincePreviousDays },
-          previousTaskId: this.previousTaskId
-        };
-        if (this.selectedTaskId !== null) {
-          this.taskService.updateTask(taskData);
-        } else {
-          this.taskService.addTask(taskData);
-        }
-        this.tasks = this.taskService.getTasks();
-        this.clearForm();
-        this.showMessage('Task added/updated successfully!');
+      const newTask = new Task(this.taskService.getNextId(), this.taskName);
+      setPreviousTaskId(this, newTask);
+      if (newTask.isBeginningTask()) {
+        setTaskDate(this, newTask);
       } else {
-        this.showErrorMessage("Please, provide task name");
+        setAfterPreviousDays(this, newTask);
       }
+      this.taskService.addTask(newTask);
+      this.showMessage('Task successfully added!');
+      this.clearForm();
+      this.tasks = this.taskService.getTasks();
     } catch (error) {
       if (error instanceof (Error)) {
         this.showErrorMessage(error.message);
+      } else {
+        this.showErrorMessage(error as string);
       }
     }
 
-    function checkPreviousTaskExists(component: TaskEditorComponent, previousTaskId: number) {
-      if (previousTaskId === -1) {
-        return true;
+    function setPreviousTaskId(component: TaskEditorComponent, task: Task): void {
+      if (component.previousTaskExists()) {
+        task.previousTaskId = component.previousTaskId;
+      } else {
+        throw Error(`Previous task ${component.previousTaskId} does not exist`);
       }
-      if (component.taskService.hasTask(previousTaskId)) {
-        return true;
+    }
+
+    function setTaskDate(component: TaskEditorComponent, task: Task) {
+      if (component.checkTaskDate()) {
+        task.date.month = component.taskMonth;
+        task.date.day = component.taskDay;
+      } else {
+        throw Error(`Missing date for the task ${task.name}`);
       }
-      return false;
+    }
+
+    function setAfterPreviousDays(component: TaskEditorComponent, task: Task) {
+      task.afterPreviousDays = component.afterPreviousDays;
+    }
+  }
+
+  isNewTask(): boolean {
+    return this.selectedTaskId === Constants.NO_SELECTED_TASK_ID;
+  }
+
+  updateTask(): void {
+    const newTask = new Task(this.taskService.getNextId(), this.taskName);
+    setPreviousTaskId(this, newTask);
+    if (newTask.isBeginningTask()) {
+      setTaskDate(this, newTask);
+    } else {
+      setAfterPreviousDays(this, newTask);
+    }
+    this.taskService.addTask(newTask);
+
+    function setPreviousTaskId(component: TaskEditorComponent, task: Task): void {
+      if (component.previousTaskExists()) {
+        task.previousTaskId = component.previousTaskId;
+      } else {
+        throw Error(`Previous task ${component.previousTaskId} does not exist`);
+      }
+    }
+
+    function setTaskDate(component: TaskEditorComponent, task: Task) {
+      if (component.checkTaskDate()) {
+        task.date.month = component.taskMonth;
+        task.date.day = component.taskDay;
+      } else {
+        throw Error(`Missing date for the task ${task.name}`);
+      }
+    }
+
+    function setAfterPreviousDays(component: TaskEditorComponent, task: Task) {
+      task.afterPreviousDays = component.afterPreviousDays;
+    }
+  }
+
+  private previousTaskExists(): boolean {
+    return this.previousTaskId === Constants.NO_SELECTED_TASK_ID ? true : this.taskService.hasTask(this.previousTaskId);
+  }
+
+  private checkTaskDate(): boolean {
+    return this.taskDay > 0 && this.taskMonth > 0;
+  }
+
+  canNotUpdateName() {
+    if (!this.isNewTask()) {
+      this.showErrorMessage("can not update name of existing tasks");
+      this.clearForm();
     }
   }
 
   private clearForm() {
     this.taskName = '';
-    this.previousTaskId = this.NO_SELECTED_TASK;
-    this.selectedTaskId = this.NO_SELECTED_TASK;
+    this.previousTaskId = Constants.NO_SELECTED_TASK_ID;
+    this.selectedTaskId = Constants.NO_SELECTED_TASK_ID;
     this.taskMonth = 0;
     this.taskDay = 0;
     this.sincePreviousMonths = 0;
-    this.sincePreviousDays = 0;
-  }
-
-  changeButtonLabel() {
-    if (this.selectedTaskId !== this.NO_SELECTED_TASK) {
-      this.clearForm();
-    }
+    this.afterPreviousDays = 0;
   }
 
   loadTask(task: Task): void {
@@ -88,12 +136,11 @@ export class TaskEditorComponent {
     this.selectedTaskId = task.id;
     this.taskMonth = task.date.month;
     this.taskDay = task.date.day;
-    this.sincePreviousMonths = task.sincePrevious.months;
-    this.sincePreviousDays = task.sincePrevious.days;
+    this.afterPreviousDays = task.afterPreviousDays;
   };
 
   deleteTask(): void {
-    if (this.selectedTaskId !== this.NO_SELECTED_TASK) {
+    if (!this.isNewTask()) {
       this.taskService.deleteTask(this.selectedTaskId);
       this.tasks = this.taskService.getTasks();
     }

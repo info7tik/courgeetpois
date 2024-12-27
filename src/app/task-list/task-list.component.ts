@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Constants } from '../constants';
 import { Task } from '../task';
 import { TaskService } from '../task.service';
 
@@ -8,6 +9,7 @@ import { TaskService } from '../task.service';
   styleUrl: './task-list.component.css'
 })
 export class TaskListComponent implements OnInit {
+  NO_SELECTED_TASK = Constants.NO_SELECTED_TASK_ID;
   taskName: string = '';
   previousTaskId: number | undefined;
   tasks: Task[] = [];
