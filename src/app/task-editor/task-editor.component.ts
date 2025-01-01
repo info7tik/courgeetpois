@@ -28,13 +28,8 @@ export class TaskEditorComponent {
 
   addTask(): void {
     try {
-      const newTask = new Task(this.taskService.getNextId(), this.taskName);
-      setPreviousTaskId(this, newTask);
-      if (newTask.isBeginningTask()) {
-        setTaskDate(this, newTask);
-      } else {
-        setAfterPreviousDays(this, newTask);
-      }
+      const newTask = new Task(this.taskService.getNewId(), this.taskName);
+      this.fillTaskAttributes(newTask);
       this.taskService.addTask(newTask);
       this.showMessage('Task successfully added!');
       this.clearForm();
@@ -46,78 +41,65 @@ export class TaskEditorComponent {
         this.showErrorMessage(error as string);
       }
     }
+  }
 
-    function setPreviousTaskId(component: TaskEditorComponent, task: Task): void {
-      if (component.previousTaskExists()) {
-        task.previousTaskId = component.previousTaskId;
+  updateTask(): void {
+    try {
+      const toUpdateTask = new Task(this.selectedTaskId, this.taskName);
+      this.fillTaskAttributes(toUpdateTask);
+      this.taskService.updateTask(toUpdateTask);
+      this.showMessage('Task successfully added!');
+      this.clearForm();
+      this.tasks = this.taskService.getTasks();
+    } catch (error) {
+      if (error instanceof (Error)) {
+        this.showErrorMessage(error.message);
       } else {
-        throw Error(`Previous task ${component.previousTaskId} does not exist`);
+        this.showErrorMessage(error as string);
       }
     }
+  }
 
-    function setTaskDate(component: TaskEditorComponent, task: Task) {
-      if (component.checkTaskDate()) {
-        task.date.month = component.taskMonth;
-        task.date.day = component.taskDay;
+  private fillTaskAttributes(newTask: Task) {
+    setPreviousTaskId(this.taskService, newTask, this.previousTaskId);
+    if (newTask.isBeginningTask()) {
+      setTaskDate(newTask, this.taskMonth, this.taskDay);
+    } else {
+      setAfterPreviousDays(newTask, this.afterPreviousDays);
+    }
+
+    function setTaskDate(task: Task, taskMonth: number, taskDay: number) {
+      if (hasTaskDate(taskMonth, taskDay)) {
+        task.date.month = taskMonth;
+        task.date.day = taskDay;
       } else {
         throw Error(`Missing date for the task ${task.name}`);
       }
+
+      function hasTaskDate(taskMonth: number, taskDay: number): boolean {
+        return taskMonth > 0 && taskDay > 0;
+      }
     }
 
-    function setAfterPreviousDays(component: TaskEditorComponent, task: Task) {
-      task.afterPreviousDays = component.afterPreviousDays;
+    function setPreviousTaskId(taskService: TaskService, task: Task, taskId: number) {
+      if (previousTaskExists(taskService, taskId)) {
+        task.previousTaskId = taskId;
+      } else {
+        throw Error(`Previous task ${taskId} does not exist`);
+      }
+
+      function previousTaskExists(taskService: TaskService, taskId: number): boolean {
+        return taskId === Constants.NO_SELECTED_TASK_ID ? true : taskService.hasTask(taskId);
+      }
+    }
+
+    function setAfterPreviousDays(task: Task, afterPreviousDays: number) {
+      task.afterPreviousDays = afterPreviousDays;
     }
   }
 
   isNewTask(): boolean {
     return this.selectedTaskId === Constants.NO_SELECTED_TASK_ID;
-  }
-
-  updateTask(): void {
-    const newTask = new Task(this.taskService.getNextId(), this.taskName);
-    setPreviousTaskId(this, newTask);
-    if (newTask.isBeginningTask()) {
-      setTaskDate(this, newTask);
-    } else {
-      setAfterPreviousDays(this, newTask);
-    }
-    this.taskService.addTask(newTask);
-
-    function setPreviousTaskId(component: TaskEditorComponent, task: Task): void {
-      if (component.previousTaskExists()) {
-        task.previousTaskId = component.previousTaskId;
-      } else {
-        throw Error(`Previous task ${component.previousTaskId} does not exist`);
-      }
-    }
-
-    function setTaskDate(component: TaskEditorComponent, task: Task) {
-      if (component.checkTaskDate()) {
-        task.date.month = component.taskMonth;
-        task.date.day = component.taskDay;
-      } else {
-        throw Error(`Missing date for the task ${task.name}`);
-      }
-    }
-
-    function setAfterPreviousDays(component: TaskEditorComponent, task: Task) {
-      task.afterPreviousDays = component.afterPreviousDays;
-    }
-  }
-
-  private previousTaskExists(): boolean {
-    return this.previousTaskId === Constants.NO_SELECTED_TASK_ID ? true : this.taskService.hasTask(this.previousTaskId);
-  }
-
-  private checkTaskDate(): boolean {
-    return this.taskDay > 0 && this.taskMonth > 0;
-  }
-
-  canNotUpdateName() {
-    if (!this.isNewTask()) {
-      this.showErrorMessage("can not update name of existing tasks");
-      this.clearForm();
-    }
   }
 
   private clearForm() {
@@ -143,6 +125,7 @@ export class TaskEditorComponent {
     if (!this.isNewTask()) {
       this.taskService.deleteTask(this.selectedTaskId);
       this.tasks = this.taskService.getTasks();
+      this.clearForm();
     }
   }
 

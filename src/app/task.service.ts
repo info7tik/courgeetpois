@@ -70,7 +70,14 @@ export class TaskService {
     this.storageService.saveTasksToLocalStorage(this.tasks);
   }
 
-  getNextId(): number {
-    return this.tasks.length + 1;
+  getNewId(): number {
+    const existingIds = this.tasks.map(task => task.id);
+    const maxId = Math.max(...existingIds);
+    for (let index = 0; index < maxId; index++) {
+      if (!existingIds.includes(index)) {
+        return index;
+      }
+    }
+    return maxId + 1;
   }
 }
