@@ -6,21 +6,23 @@ import { Task } from './task';
   providedIn: 'root'
 })
 export class StorageService {
-  private storageKey = 'tasks';
+  private readonly STORAGE_KEY = 'tasks';
 
   constructor() { }
 
   loadTasksFromLocalStorage(): Task[] {
-    const storedTasks = localStorage.getItem(this.storageKey);
+    const storedTasks = localStorage.getItem(this.STORAGE_KEY);
     if (storedTasks) {
-      return this.keepProperlyConfiguredTasks(JSON.parse(storedTasks) as Task[]);
+      const parsedTasks: Task[] = JSON.parse(storedTasks).map((JSONtask: any) => Task.buildTaskFromJSON(JSONtask));
+      return this.keepProperlyConfiguredTasks(parsedTasks);
     } else {
       return [];
     }
   }
 
   saveTasksToLocalStorage(tasks: Task[]): void {
-    localStorage.setItem(this.storageKey, JSON.stringify(this.keepProperlyConfiguredTasks(tasks)));
+    const JSONtasks = this.keepProperlyConfiguredTasks(tasks).map(task => task.toJSON());
+    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(JSONtasks));
   }
 
   private keepProperlyConfiguredTasks(tasks: Task[]): Task[] {

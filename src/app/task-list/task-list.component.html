@@ -1,10 +1,8 @@
 <div>
   <h3>Task List</h3>
   <div *ngFor="let task of tasks">
-    <div *ngIf="this.NO_SELECTED_TASK === task.previousTaskId">
-      {{task.date.day | number: "2.0"}}/{{task.date.month | number: "2.0"}}
-    </div>
+    <div style="background-color: #deffc8;">{{ task.fullDate.toDateString() }}</div>
     {{ task.id }}: {{ task.name }}
-    <span *ngIf="task.previousTaskId">(Previous Task ID: {{ task.previousTaskId }})</span>
+    <span>(Previous Task ID: {{ task.previousTaskId }})</span>
   </div>
 </div>

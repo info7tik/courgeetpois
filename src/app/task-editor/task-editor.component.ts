@@ -22,7 +22,7 @@ export class TaskEditorComponent {
   selectedTaskId: number = Constants.NO_SELECTED_TASK_ID;
 
   constructor(private taskService: TaskService) {
-    this.tasks = this.taskService.getTasks();
+    this.tasks = this.taskService.getTasksOrderByPreviousTaskId();
     this.clearForm();
   }
 
@@ -33,7 +33,7 @@ export class TaskEditorComponent {
       this.taskService.addTask(newTask);
       this.showMessage('Task successfully added!');
       this.clearForm();
-      this.tasks = this.taskService.getTasks();
+      this.tasks = this.taskService.getTasksOrderByPreviousTaskId();
     } catch (error) {
       if (error instanceof (Error)) {
         this.showErrorMessage(error.message);
@@ -50,7 +50,7 @@ export class TaskEditorComponent {
       this.taskService.updateTask(toUpdateTask);
       this.showMessage('Task successfully added!');
       this.clearForm();
-      this.tasks = this.taskService.getTasks();
+      this.tasks = this.taskService.getTasksOrderByPreviousTaskId();
     } catch (error) {
       if (error instanceof (Error)) {
         this.showErrorMessage(error.message);
@@ -68,19 +68,6 @@ export class TaskEditorComponent {
       setAfterPreviousDays(newTask, this.afterPreviousDays);
     }
 
-    function setTaskDate(task: Task, taskMonth: number, taskDay: number) {
-      if (hasTaskDate(taskMonth, taskDay)) {
-        task.date.month = taskMonth;
-        task.date.day = taskDay;
-      } else {
-        throw Error(`Missing date for the task ${task.name}`);
-      }
-
-      function hasTaskDate(taskMonth: number, taskDay: number): boolean {
-        return taskMonth > 0 && taskDay > 0;
-      }
-    }
-
     function setPreviousTaskId(taskService: TaskService, task: Task, taskId: number) {
       if (previousTaskExists(taskService, taskId)) {
         task.previousTaskId = taskId;
@@ -90,6 +77,19 @@ export class TaskEditorComponent {
 
       function previousTaskExists(taskService: TaskService, taskId: number): boolean {
         return taskId === Constants.NO_SELECTED_TASK_ID ? true : taskService.hasTask(taskId);
+      }
+    }
+
+    function setTaskDate(task: Task, taskMonth: number, taskDay: number) {
+      if (hasTaskDate(taskMonth, taskDay)) {
+        task.date.month = taskMonth - 1;
+        task.date.day = taskDay;
+      } else {
+        throw Error(`Missing date for the task ${task.name}`);
+      }
+
+      function hasTaskDate(taskMonth: number, taskDay: number): boolean {
+        return taskMonth > 0 && taskDay > 0;
       }
     }
 
@@ -124,7 +124,7 @@ export class TaskEditorComponent {
   deleteTask(): void {
     if (!this.isNewTask()) {
       this.taskService.deleteTask(this.selectedTaskId);
-      this.tasks = this.taskService.getTasks();
+      this.tasks = this.taskService.getTasksOrderByPreviousTaskId();
       this.clearForm();
     }
   }

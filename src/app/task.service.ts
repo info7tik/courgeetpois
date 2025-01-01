@@ -22,23 +22,68 @@ export class TaskService {
     throw Error(`No task with ID ${taskId}`);
   }
 
-  getTasks(): Task[] {
-    let result = getTasksWithoutPreviousTask(this);
-    if (result.length === 0) {
-      throw Error(`No first tasks: (missing tasks with previousId ${Constants.NO_SELECTED_TASK_ID})`);
+  getTasksOrderByDate(): Task[] {
+    this.setFullDate(this.tasks);
+    return this.tasks.sort((t1, t2) => t1.fullDate.getTime() - t2.fullDate.getTime());
+  }
+
+  getTasksOrderByPreviousTaskId(): Task[] {
+    if (this.tasks.length === 0) {
+      return [];
     }
-    let oldResultSize = 0;
-    let newTaskIds = result.map(t => t.id);
-    while (oldResultSize < result.length) {
-      oldResultSize = result.length;
-      const newTasks = this.tasks.filter(t => newTaskIds.includes(t.previousTaskId));
-      newTaskIds = newTasks.map(t => t.id);
-      result = [...result, ...newTasks];
-    }
+    const result = sortTasks(this.tasks);
+    this.setFullDate(result);
     return result;
 
-    function getTasksWithoutPreviousTask(service: TaskService) {
-      return service.tasks.filter((task) => task.previousTaskId == -1);
+    function sortTasks(unorderedTasks: Task[]): Task[] {
+      let result = getTasksWithoutPreviousTask(unorderedTasks);
+      if (result.length === 0) {
+        throw Error(`No first tasks: (missing tasks with previousId ${Constants.NO_SELECTED_TASK_ID})`);
+      }
+      let oldResultSize = 0;
+      let newTaskIds = result.map(t => t.id);
+      while (oldResultSize < result.length) {
+        oldResultSize = result.length;
+        const newTasks = unorderedTasks.filter(t => newTaskIds.includes(t.previousTaskId));
+        newTaskIds = newTasks.map(t => t.id);
+        result = [...result, ...newTasks];
+      }
+      return result;
+
+      function getTasksWithoutPreviousTask(tasks: Task[]) {
+        return tasks.filter((task) => task.previousTaskId == -1);
+      }
+    }
+  }
+
+  private setFullDate(tasks: Task[]) {
+    for (let index = 0; index < tasks.length; index++) {
+      const task = tasks[index];
+      if (task.isBeginningTask()) {
+        computeFullDate(task, undefined);
+      } else {
+        computeFullDate(task, this.getTaskById(task.previousTaskId));
+      }
+    }
+
+    function computeFullDate(task: Task, previousTask: Task | undefined) {
+      if (task.isBeginningTask()) {
+        if (task.hasDate()) {
+          let fullDate = new Date();
+          fullDate.setMonth(task.date.month, task.date.day);
+          task.fullDate = fullDate;
+        } else {
+          throw Error(`Wrong date format month:${task.date.month}, day:${task.date.day}`);
+        }
+      } else {
+        if (previousTask) {
+          let fullDate = new Date(previousTask.fullDate);
+          fullDate.setDate(fullDate.getDate() + task.afterPreviousDays);
+          task.fullDate = fullDate;
+        } else {
+          throw Error(`No previous task for task with ID ${task.id}`);
+        }
+      }
     }
   }
 
@@ -63,14 +108,17 @@ export class TaskService {
     this.tasks = this.tasks.filter(existing => existing.id !== task.id);
     this.tasks.push(task);
     this.storageService.saveTasksToLocalStorage(this.tasks);
-  }
+  };
 
   deleteTask(id: number): void {
     this.tasks = this.tasks.filter(existing => existing.id !== id);
     this.storageService.saveTasksToLocalStorage(this.tasks);
-  }
+  };
 
   getNewId(): number {
+    if (this.tasks.length === 0) {
+      return 0;
+    }
     const existingIds = this.tasks.map(task => task.id);
     const maxId = Math.max(...existingIds);
     for (let index = 0; index < maxId; index++) {

@@ -20,6 +20,6 @@ describe("task service", () => {
     service.addTask(createTask(2));
     service.addTask(createTask(3));
     service.deleteTask(2);
-    expect(service.getTasks().length).toBe(2);
+    expect(service.getTasksOrderByPreviousTaskId().length).toBe(2);
   });
 });
