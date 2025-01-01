@@ -24,6 +24,7 @@ export class TaskService {
 
   getTasksOrderByDate(): Task[] {
     this.setFullDate(this.tasks);
+    //TODO: move the doneTasks to the end of the list
     return this.tasks.sort((t1, t2) => t1.fullDate.getTime() - t2.fullDate.getTime());
   }
 
@@ -60,29 +61,9 @@ export class TaskService {
     for (let index = 0; index < tasks.length; index++) {
       const task = tasks[index];
       if (task.isBeginningTask()) {
-        computeFullDate(task, undefined);
+        task.computeFullDate(undefined);
       } else {
-        computeFullDate(task, this.getTaskById(task.previousTaskId));
-      }
-    }
-
-    function computeFullDate(task: Task, previousTask: Task | undefined) {
-      if (task.isBeginningTask()) {
-        if (task.hasDate()) {
-          let fullDate = new Date();
-          fullDate.setMonth(task.date.month, task.date.day);
-          task.fullDate = fullDate;
-        } else {
-          throw Error(`Wrong date format month:${task.date.month}, day:${task.date.day}`);
-        }
-      } else {
-        if (previousTask) {
-          let fullDate = new Date(previousTask.fullDate);
-          fullDate.setDate(fullDate.getDate() + task.afterPreviousDays);
-          task.fullDate = fullDate;
-        } else {
-          throw Error(`No previous task for task with ID ${task.id}`);
-        }
+        task.computeFullDate(this.getTaskById(task.previousTaskId));
       }
     }
   }

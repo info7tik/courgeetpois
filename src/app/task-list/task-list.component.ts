@@ -20,4 +20,5 @@ export class TaskListComponent implements OnInit {
   ngOnInit(): void {
     this.tasks = this.taskService.getTasksOrderByDate();
   }
+  //TODO: add a button to mark the task as done
 }
