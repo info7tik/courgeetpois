@@ -8,7 +8,7 @@ export class Task {
   date: TaskDate = { "month": 0, "day": 0 };
   afterPreviousDays: number = 0;
   fullDate: Date = new Date();
-  doneDates: { [year: number]: string; } = {};
+  doneDates: { [year: number]: Date; } = {};
 
   constructor(id: number, name: string) {
     this._id = id;
@@ -28,20 +28,25 @@ export class Task {
   }
 
   hasDate(): boolean {
-    return this.date.month > 0 && this.date.day > 0;
+    return this.date.month >= 0 && this.date.day > 0;
   }
 
   markAsDone() {
-    //TODO add the current date to the doneDates
+    const today = new Date();
+    this.doneDates[today.getFullYear()] = today;
   }
 
   isDone(): boolean {
-    //TODO
-    return false;
+    const today = new Date();
+    return today.getFullYear() in this.doneDates;
   }
 
   computeFullDate(previousTask: Task | undefined) {
-    //TODO: if this has doneDate for the current year, return the doneDate
+    if (this.isDone()) {
+      const today = new Date();
+      this.fullDate = this.doneDates[today.getFullYear()];
+      return;
+    }
     if (this.isBeginningTask()) {
       if (this.hasDate()) {
         let fullDate = new Date();
@@ -66,18 +71,20 @@ export class Task {
     newTask.previousTaskId = jsonObject["previousTaskId"];
     newTask.date = jsonObject["date"];
     newTask.afterPreviousDays = jsonObject["afterPreviousDays"];
-    // TODO: load the doneDates with format MM/DD/YYYY
+    newTask.doneDates = {};
+    Object.entries(JSON.parse(jsonObject["doneDates"])).forEach(
+      ([year, dateString]) => newTask.doneDates[parseInt(year)] = new Date(dateString as string));
     return newTask;
   }
 
   toJSON(): {} {
-    // TODO: export the doneDates with format MM/DD/YYYY
     return {
       "id": this._id,
       "name": this._name,
       "previousTaskId": this.previousTaskId,
       "date": { "month": this.date.month, "day": this.date.day },
-      "afterPreviousDays": this.afterPreviousDays
+      "afterPreviousDays": this.afterPreviousDays,
+      "doneDates": JSON.stringify(this.doneDates)
     };
   }
 }

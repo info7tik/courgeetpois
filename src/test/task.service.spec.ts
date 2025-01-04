@@ -1,24 +1,16 @@
-import { Constants } from "../app/constants";
-import { Task } from "../app/task";
 import { TaskService } from "../app/task.service";
 import { MockStorageService } from "./MockStorageService";
+import { TestUtils } from "./TestUtils";
 
 
-describe("task service", () => {
-  function createTask(id: number): Task {
-    return {
-      "id": id,
-      "name": `name${id}`,
-      "previousTaskId": Constants.NO_SELECTED_TASK_ID,
-      "_date": { "month": 1, "day": 1 },
-      "sincePrevious": { "months": 0, "days": 0 }
-    };
-  }
+describe("task service tests", () => {
+  const utils: TestUtils = new TestUtils();
+
   it("delete task", () => {
     const service = new TaskService(new MockStorageService());
-    service.addTask(createTask(1));
-    service.addTask(createTask(2));
-    service.addTask(createTask(3));
+    service.addTask(utils.createTask(1, 0, 15));
+    service.addTask(utils.createTask(2, 1, 15));
+    service.addTask(utils.createTask(3, 2, 15));
     service.deleteTask(2);
     expect(service.getTasksOrderByPreviousTaskId().length).toBe(2);
   });

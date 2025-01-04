@@ -13,6 +13,12 @@ export class TaskService {
     this.tasks = storageService.loadTasksFromLocalStorage();
   }
 
+  markAsDone(taskId: number): void {
+    const task = this.getTaskById(taskId);
+    task.markAsDone();
+    this.setFullDates(this.tasks);
+    this.storageService.saveTasksToLocalStorage(this.tasks);
+  }
 
   getTaskById(taskId: number): Task {
     const foundTask = this.tasks.find(task => task.id === taskId);
@@ -23,7 +29,7 @@ export class TaskService {
   }
 
   getTasksOrderByDate(): Task[] {
-    this.setFullDate(this.tasks);
+    this.setFullDates(this.tasks);
     //TODO: move the doneTasks to the end of the list
     return this.tasks.sort((t1, t2) => t1.fullDate.getTime() - t2.fullDate.getTime());
   }
@@ -33,7 +39,7 @@ export class TaskService {
       return [];
     }
     const result = sortTasks(this.tasks);
-    this.setFullDate(result);
+    this.setFullDates(result);
     return result;
 
     function sortTasks(unorderedTasks: Task[]): Task[] {
@@ -57,7 +63,7 @@ export class TaskService {
     }
   }
 
-  private setFullDate(tasks: Task[]) {
+  private setFullDates(tasks: Task[]) {
     for (let index = 0; index < tasks.length; index++) {
       const task = tasks[index];
       if (task.isBeginningTask()) {
@@ -92,6 +98,11 @@ export class TaskService {
   };
 
   deleteTask(id: number): void {
+    const taskToDelete = this.getTaskById(id);
+    const followingTasks = this.tasks.filter(task => task.previousTaskId === taskToDelete.id);
+    if (followingTasks.length > 0) {
+      throw Error(`can not delete the task ${id} because it is connected to other tasks ${followingTasks.map(task => task.id)}`);
+    }
     this.tasks = this.tasks.filter(existing => existing.id !== id);
     this.storageService.saveTasksToLocalStorage(this.tasks);
   };

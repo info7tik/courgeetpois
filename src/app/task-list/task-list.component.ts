@@ -12,13 +12,28 @@ export class TaskListComponent implements OnInit {
   NO_SELECTED_TASK = Constants.NO_SELECTED_TASK_ID;
   taskName: string = '';
   previousTaskId: number | undefined;
-  tasks: Task[] = [];
+  futureTasks: Task[] = [];
+  pastTasks: Task[] = [];
   message: string = '';
 
   constructor(private taskService: TaskService) { }
 
   ngOnInit(): void {
-    this.tasks = this.taskService.getTasksOrderByDate();
+    const tasks = this.taskService.getTasksOrderByDate();
+    this.pastTasks = tasks.filter(task => task.fullDate < buildTodayMidnight() || task.isDone());
+    this.futureTasks = tasks.filter(task => !this.pastTasks.includes(task));
+
+    function buildTodayMidnight() {
+      const today = new Date();
+      today.setHours(0);
+      today.setMinutes(0);
+      today.setSeconds(0);
+      today.setMilliseconds(0);
+      return today;
+    }
   }
-  //TODO: add a button to mark the task as done
+
+  markAsDone(taskId: number) {
+    this.taskService.markAsDone(taskId);
+  }
 }

@@ -35,11 +35,7 @@ export class TaskEditorComponent {
       this.clearForm();
       this.tasks = this.taskService.getTasksOrderByPreviousTaskId();
     } catch (error) {
-      if (error instanceof (Error)) {
-        this.showErrorMessage(error.message);
-      } else {
-        this.showErrorMessage(error as string);
-      }
+      this.showExceptionMessage(error);
     }
   }
 
@@ -116,16 +112,28 @@ export class TaskEditorComponent {
     this.taskName = task.name;
     this.previousTaskId = task.previousTaskId;
     this.selectedTaskId = task.id;
-    this.taskMonth = task.date.month;
+    this.taskMonth = task.date.month + 1;
     this.taskDay = task.date.day;
     this.afterPreviousDays = task.afterPreviousDays;
   };
 
   deleteTask(): void {
     if (!this.isNewTask()) {
-      this.taskService.deleteTask(this.selectedTaskId);
-      this.tasks = this.taskService.getTasksOrderByPreviousTaskId();
-      this.clearForm();
+      try {
+        this.taskService.deleteTask(this.selectedTaskId);
+        this.tasks = this.taskService.getTasksOrderByPreviousTaskId();
+        this.clearForm();
+      } catch (error) {
+        this.showExceptionMessage(error);
+      }
+    }
+  }
+
+  private showExceptionMessage(error: unknown) {
+    if (error instanceof (Error)) {
+      this.showErrorMessage(error.message);
+    } else {
+      this.showErrorMessage(error as string);
     }
   }
 

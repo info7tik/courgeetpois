@@ -21,7 +21,7 @@ export class StorageService {
   }
 
   saveTasksToLocalStorage(tasks: Task[]): void {
-    const JSONtasks = this.keepProperlyConfiguredTasks(tasks).map(task => task.toJSON());
+    const JSONtasks = this.keepProperlyConfiguredTasks(tasks);
     localStorage.setItem(this.STORAGE_KEY, JSON.stringify(JSONtasks));
   }
 
