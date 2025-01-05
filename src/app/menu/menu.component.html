@@ -1,12 +1,12 @@
 <button (click)="toggleMenu()">{{ showMenu ? 'Hide' : 'Show' }} Menu</button>
 
 <nav [class.show]="showMenu">
-    <ul>
-        <li><a routerLink="/seed-list" (click)="toggleMenu()">Liste des graines</a></li>
-        <li><a routerLink="/task-list" (click)="toggleMenu()">Liste des tâches</a></li>
-        <hr>
-        <li><a routerLink="/seed-editor" (click)="toggleMenu()">Ajout de graines</a></li>
-        <li><a routerLink="/task-editor" (click)="toggleMenu()">Ajout de tâches</a></li>
-    </ul>
+  <ul>
+    <li><a routerLink="/crop-list" (click)="toggleMenu()">Liste des plantes</a></li>
+    <li><a routerLink="/task-list" (click)="toggleMenu()">Liste des tâches</a></li>
+    <hr>
+    <li><a routerLink="/crop-editor" (click)="toggleMenu()">Ajout de plantes</a></li>
+    <li><a routerLink="/task-editor" (click)="toggleMenu()">Ajout de tâches</a></li>
+  </ul>
 </nav>
 <router-outlet></router-outlet>
