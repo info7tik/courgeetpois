@@ -8,7 +8,7 @@
     <label>Semis</label>
     <div *ngIf="isSowing">
       <label>Date du semis :</label>
-      <input type="date">
+      <app-annual-date #sowing></app-annual-date>
     </div>
   </div>
   <div>
@@ -16,9 +16,8 @@
     <label>Repiquage</label>
     <div *ngIf="isTransplanting">
       <label>Date du repiquage :</label>
-      <input type="date">
+      <app-annual-date #transplanting></app-annual-date>
     </div>
   </div>
   <button type="submit">Ajouter</button>
-
 </div>
