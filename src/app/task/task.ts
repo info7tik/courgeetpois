@@ -10,7 +10,7 @@ export class Task extends Element {
   doneDates: { [year: number]: Date; } = {};
 
   constructor(id: number, name: string) {
-    super("task", id, name);
+    super(id, name);
   }
 
   isBeginningTask(): boolean {

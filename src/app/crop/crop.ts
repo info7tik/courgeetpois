@@ -1,12 +1,11 @@
-export class Crop {
-  id: string;
-  name: string;
+import { Element } from "../common/element";
+
+export class Crop extends Element {
   isSowing: boolean = false;
   isTransplanting: boolean = false;
 
-  constructor(id: string, name: string) {
-    this.id = id;
-    this.name = name;
+  constructor(id: number, name: string) {
+    super(id, name);
   }
 
   static buildCropFromJSON(JSONCrop: any): Crop {

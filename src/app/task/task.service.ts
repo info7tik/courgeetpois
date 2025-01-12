@@ -25,17 +25,12 @@ export class TaskService extends ElementService<Task> {
     return this.elements.sort((t1, t2) => t1.fullDate.getTime() - t2.fullDate.getTime());
   }
 
-  getElements(): Task[] {
-    return this.getTasksWithPreviousTasksBefore();
-  }
-
-  private getTasksWithPreviousTasksBefore(): Task[] {
-    if (this.elements.length === 0) {
-      return [];
+  sortTasksWithPreviousTasksBefore(): void {
+    if (this.elements.length > 0) {
+      const result = sortTasks(this.elements);
+      this.setFullDates(result);
+      this.elements = result;
     }
-    const result = sortTasks(this.elements);
-    this.setFullDates(result);
-    return result;
 
     function sortTasks(unorderedTasks: Task[]): Task[] {
       let result = getTasksWithoutPreviousTask(unorderedTasks);
@@ -69,29 +64,11 @@ export class TaskService extends ElementService<Task> {
     }
   }
 
-  getNewId(): number {
-    if (this.elements.length === 0) {
-      return 0;
-    }
-    const existingIds = this.elements.map(task => task.id);
-    const maxId = Math.max(...existingIds);
-    for (let index = 0; index < maxId; index++) {
-      if (!existingIds.includes(index)) {
-        return index;
-      }
-    }
-    return maxId + 1;
-  }
-
-  loadTasksFromLocalStorage(): Task[] {
-    return this.storageService.loadTasksFromLocalStorage();
-  }
-
-  override saveElementsToLocalStorage(): void {
+  saveElementsToLocalStorage(): void {
     this.storageService.saveTasksToLocalStorage(this.elements);
   }
 
-  override loadElementsFromLocalStorage(): Task[] {
+  loadElementsFromLocalStorage(): Task[] {
     return this.storageService.loadTasksFromLocalStorage();
   }
 }

@@ -8,9 +8,22 @@ export abstract class ElementService<T extends Element> {
     this.elements = this.loadElementsFromLocalStorage();
   }
 
-  abstract getElements(): T[];
   abstract saveElementsToLocalStorage(): void;
   abstract loadElementsFromLocalStorage(): T[];
+
+  getNewId(): number {
+    if (this.elements.length === 0) {
+      return 0;
+    }
+    const existingIds = this.elements.map(el => el.id);
+    const maxId = Math.max(...existingIds);
+    for (let index = 0; index < maxId; index++) {
+      if (!existingIds.includes(index)) {
+        return index;
+      }
+    }
+    return maxId + 1;
+  }
 
   addElement(element: T): void {
     if (this.hasElement(element.id)) {
@@ -27,6 +40,10 @@ export abstract class ElementService<T extends Element> {
     } catch {
       return false;
     }
+  }
+
+  getElements(): T[] {
+    return this.elements;
   }
 
   getElementById(elementId: number): T {

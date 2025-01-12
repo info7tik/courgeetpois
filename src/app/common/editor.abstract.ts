@@ -13,6 +13,7 @@ export abstract class Editor<T extends Element> {
   constructor(service: ElementService<T>) {
     this.service = service;
     this.clearForm();
+    this.elements = this.service.getElements();
   };
 
   protected abstract clearForm(): void;

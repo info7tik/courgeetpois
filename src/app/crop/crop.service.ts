@@ -1,38 +1,22 @@
 import { Injectable } from '@angular/core';
+import { ElementService } from '../common/element.service.abstract';
 import { StorageService } from '../common/storage.service';
 import { Crop } from './crop';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CropService {
-  private readonly MAX_CROPS_NUMBER = 10000;
-  private crops: Crop[] = [];
+export class CropService extends ElementService<Crop> {
 
-  constructor(private storageService: StorageService) {
-    this.crops = this.storageService.loadCropsFromLocalStorage();
+  constructor(storageService: StorageService) {
+    super(storageService);
   }
 
-
-  add(crop: Crop): void {
-    this.crops.push(crop);
-    this.storageService.saveCropsToLocalStorage(this.crops);
+  saveElementsToLocalStorage(): void {
+    this.storageService.saveCropsToLocalStorage(this.elements);
   }
 
-  getElements(): Crop[] {
-    return this.crops;
+  loadElementsFromLocalStorage(): Crop[] {
+    return this.storageService.loadCropsFromLocalStorage();
   }
-
-  getNewId(): string {
-    const beginningId = "crop";
-    const existingIds = this.crops.map(crop => crop.id);
-    for (let counter = 1; counter < this.MAX_CROPS_NUMBER; counter++) {
-      const newId = `${beginningId}${counter}`;
-      if (!existingIds.includes(newId)) {
-        return newId;
-      }
-    }
-    throw new Error(`can not generate crop id: too many registered crops`);
-  }
-
 }

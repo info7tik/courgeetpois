@@ -20,7 +20,7 @@ export class TaskEditorComponent extends Editor<Task> {
 
   constructor(private taskService: TaskService) {
     super(taskService);
-    this.elements = this.taskService.loadTasksFromLocalStorage();
+    this.taskService.sortTasksWithPreviousTasksBefore();
   }
 
   addTask(): void {
@@ -28,6 +28,7 @@ export class TaskEditorComponent extends Editor<Task> {
       const newTask = new Task(this.taskService.getNewId(), this.taskName);
       this.fillTaskAttributes(newTask);
       this.add(newTask);
+      this.taskService.sortTasksWithPreviousTasksBefore();
     } catch (error) {
       this.showExceptionMessage(error);
     }
@@ -38,6 +39,7 @@ export class TaskEditorComponent extends Editor<Task> {
       const toUpdateTask = new Task(this.selectedElementId, this.taskName);
       this.fillTaskAttributes(toUpdateTask);
       this.update(toUpdateTask);
+      this.taskService.sortTasksWithPreviousTasksBefore();
     } catch (error) {
       this.showExceptionMessage(error);
     }
