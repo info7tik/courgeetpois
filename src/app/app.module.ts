@@ -10,6 +10,7 @@ import { CropListComponent } from './crop/crop-list/crop-list.component';
 import { MenuComponent } from './menu/menu.component';
 import { TaskEditorComponent } from './task/task-editor/task-editor.component';
 import { TaskListComponent } from './task/task-list/task-list.component';
+import { AnnualDateComponent } from './annual-date/annual-date.component';
 
 const routes: Routes = [
   { path: 'task-list', component: TaskListComponent },
@@ -26,7 +27,8 @@ const routes: Routes = [
     TaskListComponent,
     MenuComponent,
     CropListComponent,
-    CropEditorComponent
+    CropEditorComponent,
+    AnnualDateComponent
   ],
   imports: [
     BrowserModule,

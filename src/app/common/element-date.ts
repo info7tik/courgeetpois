@@ -1,4 +1,4 @@
-export type TaskDate = {
+export type ElementDate = {
   month: number;
   day: number;
 };

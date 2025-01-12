@@ -29,7 +29,7 @@ export class StorageService {
   }
 
   saveTasksToLocalStorage(tasks: Task[]): void {
-    localStorage.setItem(this.TASKS_KEY, JSON.stringify(tasks));
+    localStorage.setItem(this.TASKS_KEY, JSON.stringify(tasks.map(task => task.toJSON())));
   }
 
   loadTasksFromLocalStorage(): Task[] {

@@ -25,12 +25,17 @@ export class TaskService extends ElementService<Task> {
     return this.elements.sort((t1, t2) => t1.fullDate.getTime() - t2.fullDate.getTime());
   }
 
-  sortTasksWithPreviousTasksBefore(): void {
+  override getElements(): Task[] {
+    return this.getSortedTasksWithPreviousTasksBefore();
+  }
+
+  private getSortedTasksWithPreviousTasksBefore(): Task[] {
     if (this.elements.length > 0) {
       const result = sortTasks(this.elements);
       this.setFullDates(result);
-      this.elements = result;
+      return result;
     }
+    return [];
 
     function sortTasks(unorderedTasks: Task[]): Task[] {
       let result = getTasksWithoutPreviousTask(unorderedTasks);

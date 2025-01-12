@@ -1,10 +1,10 @@
 import { Element } from "../common/element";
+import { ElementDate } from "../common/element-date";
 import { Constants } from "../constants";
-import { TaskDate } from "./task-date";
 
 export class Task extends Element {
   previousTaskId: number = Constants.NO_SELECTED_ID;
-  date: TaskDate = { "month": 0, "day": 0 };
+  date: ElementDate = { "month": 0, "day": 0 };
   afterPreviousDays: number = 0;
   fullDate: Date = new Date();
   doneDates: { [year: number]: Date; } = {};

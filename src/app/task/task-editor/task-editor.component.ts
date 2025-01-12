@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
+import { AnnualDateComponent } from '../../annual-date/annual-date.component';
 import { Editor } from '../../common/editor.abstract';
 import { Constants } from '../../constants';
 import { Task } from '../task';
@@ -10,17 +11,16 @@ import { TaskService } from '../task.service';
   styleUrl: './task-editor.component.css'
 })
 export class TaskEditorComponent extends Editor<Task> {
+  @ViewChild(AnnualDateComponent) date!: AnnualDateComponent;
+
   NO_SELECTED_TASK_ID = Constants.NO_SELECTED_ID;
   taskName: string = '';
   previousTaskId: number = Constants.NO_SELECTED_ID;
-  taskMonth: number = 0;
-  taskDay: number = 0;
   sincePreviousMonths: number = 0;
   afterPreviousDays: number = 0;
 
   constructor(private taskService: TaskService) {
     super(taskService);
-    this.taskService.sortTasksWithPreviousTasksBefore();
   }
 
   addTask(): void {
@@ -28,7 +28,6 @@ export class TaskEditorComponent extends Editor<Task> {
       const newTask = new Task(this.taskService.getNewId(), this.taskName);
       this.fillTaskAttributes(newTask);
       this.add(newTask);
-      this.taskService.sortTasksWithPreviousTasksBefore();
     } catch (error) {
       this.showExceptionMessage(error);
     }
@@ -39,7 +38,6 @@ export class TaskEditorComponent extends Editor<Task> {
       const toUpdateTask = new Task(this.selectedElementId, this.taskName);
       this.fillTaskAttributes(toUpdateTask);
       this.update(toUpdateTask);
-      this.taskService.sortTasksWithPreviousTasksBefore();
     } catch (error) {
       this.showExceptionMessage(error);
     }
@@ -48,7 +46,7 @@ export class TaskEditorComponent extends Editor<Task> {
   private fillTaskAttributes(newTask: Task) {
     setPreviousTaskId(this.taskService, newTask, this.previousTaskId);
     if (newTask.isBeginningTask()) {
-      setTaskDate(newTask, this.taskMonth, this.taskDay);
+      setTaskDate(this, newTask);
     } else {
       setAfterPreviousDays(newTask, this.afterPreviousDays);
     }
@@ -65,16 +63,11 @@ export class TaskEditorComponent extends Editor<Task> {
       }
     }
 
-    function setTaskDate(task: Task, taskMonth: number, taskDay: number) {
-      if (hasTaskDate(taskMonth, taskDay)) {
-        task.date.month = taskMonth - 1;
-        task.date.day = taskDay;
-      } else {
-        throw Error(`La date pour la tâche ${task.name} est manquante`);
-      }
-
-      function hasTaskDate(taskMonth: number, taskDay: number): boolean {
-        return taskMonth > 0 && taskDay > 0;
+    function setTaskDate(myComponent: TaskEditorComponent, task: Task) {
+      try {
+        task.date = myComponent.date.getDate();
+      } catch (error) {
+        myComponent.showExceptionMessage(error);
       }
     }
 
@@ -87,11 +80,11 @@ export class TaskEditorComponent extends Editor<Task> {
     this.taskName = '';
     this.previousTaskId = Constants.NO_SELECTED_ID;
     this.selectedElementId = Constants.NO_SELECTED_ID;
-    this.taskMonth = 0;
-    this.taskDay = 0;
+    if (this.date) {
+      this.date.reset();
+    }
     this.sincePreviousMonths = 0;
     this.afterPreviousDays = 0;
-
   }
 
   loadTask(element: Task): void {
@@ -99,8 +92,7 @@ export class TaskEditorComponent extends Editor<Task> {
     this.taskName = element.name;
     this.previousTaskId = task.previousTaskId;
     this.selectedElementId = element.id;
-    this.taskMonth = task.date.month + 1;
-    this.taskDay = task.date.day;
+    this.date.load(task.date.month, task.date.day);
     this.afterPreviousDays = task.afterPreviousDays;
   }
 }
