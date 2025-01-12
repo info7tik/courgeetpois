@@ -5,11 +5,11 @@ import { FormsModule } from '@angular/forms';
 import { provideRouter, Routes } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { CropEditorComponent } from './crop-editor/crop-editor.component';
-import { CropListComponent } from './crop-list/crop-list.component';
+import { CropEditorComponent } from './crop/crop-editor/crop-editor.component';
+import { CropListComponent } from './crop/crop-list/crop-list.component';
 import { MenuComponent } from './menu/menu.component';
-import { TaskEditorComponent } from './task-editor/task-editor.component';
-import { TaskListComponent } from './task-list/task-list.component';
+import { TaskEditorComponent } from './task/task-editor/task-editor.component';
+import { TaskListComponent } from './task/task-list/task-list.component';
 
 const routes: Routes = [
   { path: 'task-list', component: TaskListComponent },

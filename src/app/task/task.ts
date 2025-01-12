@@ -1,30 +1,20 @@
-import { Constants } from "./constants";
+import { Element } from "../common/element";
+import { Constants } from "../constants";
 import { TaskDate } from "./task-date";
 
-export class Task {
-  private _id: number;
-  private _name: string;
-  previousTaskId: number = Constants.NO_SELECTED_TASK_ID;
+export class Task extends Element {
+  previousTaskId: number = Constants.NO_SELECTED_ID;
   date: TaskDate = { "month": 0, "day": 0 };
   afterPreviousDays: number = 0;
   fullDate: Date = new Date();
   doneDates: { [year: number]: Date; } = {};
 
   constructor(id: number, name: string) {
-    this._id = id;
-    this._name = name;
-  }
-
-  get id(): number {
-    return this._id;
-  }
-
-  get name(): string {
-    return this._name;
+    super("task", id, name);
   }
 
   isBeginningTask(): boolean {
-    return this.previousTaskId === Constants.NO_SELECTED_TASK_ID;
+    return this.previousTaskId === Constants.NO_SELECTED_ID;
   }
 
   hasDate(): boolean {

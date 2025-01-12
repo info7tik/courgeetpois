@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { SeedService } from '../seed.service';
+import { Crop } from '../crop';
+import { CropService } from '../crop.service';
 
 @Component({
   selector: 'app-crop-list',
@@ -7,9 +8,8 @@ import { SeedService } from '../seed.service';
   styleUrl: './crop-list.component.css'
 })
 export class CropListComponent {
-  seeds: string[] = [];
+  crops: Crop[] = [];
 
-  constructor(private seedService: SeedService) {
-    this.seeds = this.seedService.getSeeds();
+  constructor(private cropService: CropService) {
   }
 }

@@ -1,0 +1,22 @@
+<div>
+  <h3>Liste des tâches</h3>
+  <div style="background-color: rgb(131, 189, 255);font-size: 20px;">Tâches à venir</div>
+  <div *ngIf="this.futureTasks.length === 0" style="font-weight: bold;">Toutes les tâches sont terminées!</div>
+  <div *ngFor="let task of futureTasks; index as taskIndex">
+    <div style="background-color: #deffc8; margin-top: 5px;">
+      <b *ngIf="taskIndex === 0">{{ task.fullDate.toDateString() }}</b>
+      <span *ngIf="taskIndex !== 0">{{ task.fullDate.toDateString() }}</span>
+    </div>
+    {{ task.name }}
+    <div *ngIf="task.isDone()" style="width: 100px;text-align: center; background-color: rgb(166, 255, 154);">Terminée
+    </div>
+    <button *ngIf="!task.isDone()" (click)="markAsDone(task.id)">Marquer comme terminée</button>
+  </div>
+  <div style="background-color: rgb(255, 211, 144);font-size: 20px;margin-top: 10px;">Tâches passées</div>
+  <div *ngFor="let task of pastTasks">
+    <div style="background-color: #deffc8; margin-top: 5px;">{{ task.fullDate.toDateString() }}</div>
+    {{ task.name }}
+    <div *ngIf="task.isDone()" style="background-color: rgb(166, 255, 154);">Terminée</div>
+    <button *ngIf="!task.isDone()" (click)="markAsDone(task.id)">Marquer comme terminée</button>
+  </div>
+</div>

@@ -1,0 +1,24 @@
+<div>
+  <h2>Ajout de plantes</h2>
+  <div>
+    <label>Nom de la plante :</label>
+    <input type="text" [(ngModel)]="crop" required>
+  </div>
+  <div> <input type="checkbox" [(ngModel)]="isSowing">
+    <label>Semis</label>
+    <div *ngIf="isSowing">
+      <label>Date du semis :</label>
+      <input type="date">
+    </div>
+  </div>
+  <div>
+    <input type="checkbox" [(ngModel)]="isTransplanting">
+    <label>Repiquage</label>
+    <div *ngIf="isTransplanting">
+      <label>Date du repiquage :</label>
+      <input type="date">
+    </div>
+  </div>
+  <button type="submit">Ajouter</button>
+
+</div>

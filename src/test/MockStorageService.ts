@@ -1,5 +1,5 @@
-import { StorageService } from "../app/storage.service";
-import { Task } from "../app/task";
+import { StorageService } from "../app/common/storage.service";
+import { Task } from "../app/task/task";
 
 export class MockStorageService extends StorageService {
   private tasks: Task[] = [];

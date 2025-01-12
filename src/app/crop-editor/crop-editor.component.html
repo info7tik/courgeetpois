@@ -1,9 +1,0 @@
-<div>
-    <h2>Ajouter une graine</h2>
-    <form (ngSubmit)="onSubmit()">
-      <label for="graine">Nom de la graine :</label>
-      <input type="text" id="graine" [(ngModel)]="seed" name="graine" required>
-      <button type="submit">Ajouter</button>
-      <div *ngIf="message" class="message">{{ message }}</div>
-    </form>
-</div>

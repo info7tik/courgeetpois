@@ -1,4 +1,4 @@
-import { StorageService } from "../app/storage.service";
+import { StorageService } from "../app/common/storage.service";
 import { TestUtils } from "./TestUtils";
 
 describe("storage service tests", () => {
