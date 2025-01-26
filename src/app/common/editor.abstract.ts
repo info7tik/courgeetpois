@@ -8,10 +8,7 @@ export abstract class Editor<T extends Element> {
   selectedElementId: number = Constants.NO_SELECTED_ID;
   elements: T[] = [];
 
-  private service: ElementService<T>;
-
-  constructor(service: ElementService<T>) {
-    this.service = service;
+  constructor(private service: ElementService<T>) {
     this.clearForm();
     this.elements = this.service.getElements();
   };

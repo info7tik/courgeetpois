@@ -2,7 +2,7 @@
   <h2>Ajout de plantes</h2>
   <div>
     <label>Nom de la plante :</label>
-    <input type="text" [(ngModel)]="crop" required>
+    <input type="text" [(ngModel)]="cropName" required>
   </div>
   <div> <input type="checkbox" [(ngModel)]="isSowing">
     <label>Semis</label>
@@ -19,5 +19,20 @@
       <app-annual-date #transplanting></app-annual-date>
     </div>
   </div>
-  <button type="submit">Ajouter</button>
+  <button *ngIf="isNewElement()" (click)="addCrop()">Ajouter</button>
+  <button *ngIf="!isNewElement()" (click)="updateCrop()">Modifier</button>
+  <button *ngIf="!isNewElement()" (click)="deleteSelectedElement()">Supprimer</button>
+
+  <div *ngIf="message" class="message">{{ message }}</div>
+  <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+
+  <h3>Liste des Plantes</h3>
+  <ul>
+    <ng-container *ngFor="let crop of elements">
+      <li (click)="loadCrop(crop)" style="cursor: pointer;">
+        <strong>{{ crop.id }}: {{ crop.name }}</strong>
+      </li>
+    </ng-container>
+  </ul>
+
 </div>

@@ -9,7 +9,7 @@ export class Crop extends Element {
   }
 
   static buildCropFromJSON(JSONCrop: any): Crop {
-    let crop = new Crop(JSONCrop.id, JSONCrop.name);
+    let crop = new Crop(JSONCrop._id, JSONCrop._name);
     crop.isSowing = JSONCrop.isSowing;
     crop.isTransplanting = JSONCrop.isTransplanting;
     return crop;

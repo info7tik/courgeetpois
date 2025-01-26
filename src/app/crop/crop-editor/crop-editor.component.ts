@@ -18,7 +18,6 @@ export class CropEditorComponent extends Editor<Crop> {
   cropName: string = "";
   isSowing: boolean = false;
   isTransplanting: boolean = false;
-  crop: string = "";
 
   constructor(private cropService: CropService) {
     super(cropService);
@@ -26,9 +25,9 @@ export class CropEditorComponent extends Editor<Crop> {
 
   addCrop(): void {
     try {
-      const newTask = new Crop(this.cropService.getNewId(), this.cropName);
-      this.fillTaskAttributes(newTask);
-      this.add(newTask);
+      const newCrop = new Crop(this.cropService.getNewId(), this.cropName);
+      this.fillCropAttributes(newCrop);
+      this.add(newCrop);
     } catch (error) {
       this.showExceptionMessage(error);
     }
@@ -37,21 +36,23 @@ export class CropEditorComponent extends Editor<Crop> {
   updateCrop(): void {
     try {
       const toUpdateCrop = new Crop(this.selectedElementId, this.cropName);
-      this.fillTaskAttributes(toUpdateCrop);
+      this.fillCropAttributes(toUpdateCrop);
       this.update(toUpdateCrop);
     } catch (error) {
       this.showExceptionMessage(error);
     }
   }
 
-  private fillTaskAttributes(newCrop: Crop) {
-    throw Error("not implemented yet!");
+  private fillCropAttributes(newCrop: Crop) {
+    newCrop.isSowing = this.isSowing;
+    newCrop.isTransplanting = this.isTransplanting;
   }
 
   loadCrop(element: Crop): void {
-    const crop = element;
+    this.selectedElementId = element.id;
     this.cropName = element.name;
-    throw Error("not implemented yet!");
+    this.isSowing = element.isSowing;
+    this.isTransplanting = element.isTransplanting;
   }
 
   protected override clearForm(): void {
@@ -59,6 +60,5 @@ export class CropEditorComponent extends Editor<Crop> {
     this.cropName = "";
     this.isSowing = false;
     this.isTransplanting = false;
-    this.crop = "";
   }
 }

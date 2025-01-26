@@ -12,9 +12,9 @@ export class AnnualDateComponent {
 
   getDate(): ElementDate {
     if (this.hasTaskDate()) {
-      return { "month": this.month - 1, "day": this.day };
+      return new ElementDate({ "month": this.month - 1, "day": this.day });
     }
-    throw Error(`date mal définie: m:${this.month}, d:${this.day}`);
+    throw Error(`date mal définie: mois:${this.month}, jour:${this.day}`);
   }
 
   private hasTaskDate(): boolean {

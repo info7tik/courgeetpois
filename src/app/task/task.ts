@@ -4,7 +4,7 @@ import { Constants } from "../constants";
 
 export class Task extends Element {
   previousTaskId: number = Constants.NO_SELECTED_ID;
-  date: ElementDate = { "month": 0, "day": 0 };
+  date: ElementDate = new ElementDate(Constants.NO_TASK_DATE);
   afterPreviousDays: number = 0;
   fullDate: Date = new Date();
   doneDates: { [year: number]: Date; } = {};
@@ -59,7 +59,7 @@ export class Task extends Element {
   static buildTaskFromJSON(jsonObject: any): Task {
     let newTask = new Task(jsonObject["id"], jsonObject["name"]);
     newTask.previousTaskId = jsonObject["previousTaskId"];
-    newTask.date = jsonObject["date"];
+    newTask.date = new ElementDate(jsonObject["date"]);
     newTask.afterPreviousDays = jsonObject["afterPreviousDays"];
     newTask.doneDates = {};
     Object.entries(JSON.parse(jsonObject["doneDates"])).forEach(
@@ -72,7 +72,7 @@ export class Task extends Element {
       "id": this._id,
       "name": this._name,
       "previousTaskId": this.previousTaskId,
-      "date": { "month": this.date.month, "day": this.date.day },
+      "date": this.date.toJSON(),
       "afterPreviousDays": this.afterPreviousDays,
       "doneDates": JSON.stringify(this.doneDates)
     };
