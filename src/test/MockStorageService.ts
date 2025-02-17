@@ -4,11 +4,7 @@ import { Task } from "../app/task/task";
 export class MockStorageService extends StorageService {
   private tasks: Task[] = [];
 
-  override saveTasksToLocalStorage(tasks: Task[]): void {
+  override saveToLocalStorage(tasks: Task[]): void {
     this.tasks = tasks;
-  }
-
-  override loadTasksFromLocalStorage(): Task[] {
-    return this.tasks;
   }
 }

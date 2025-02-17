@@ -13,10 +13,10 @@ export class CropService extends ElementService<Crop> {
   }
 
   saveElementsToLocalStorage(): void {
-    this.storageService.saveCropsToLocalStorage(this.elements);
+    this.storageService.saveToLocalStorage(this.elements);
   }
 
   loadElementsFromLocalStorage(): Crop[] {
-    return this.storageService.loadCropsFromLocalStorage();
+    return this.storageService.loadFromLocalStorage("crop") as Crop[];
   }
 }

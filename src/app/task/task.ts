@@ -10,7 +10,7 @@ export class Task extends Element {
   doneDates: { [year: number]: Date; } = {};
 
   constructor(id: number, name: string) {
-    super(id, name);
+    super(id, name, "task");
   }
 
   isBeginningTask(): boolean {
@@ -54,27 +54,5 @@ export class Task extends Element {
         throw Error(`No previous task for task with ID ${this.id}`);
       }
     }
-  }
-
-  static buildTaskFromJSON(jsonObject: any): Task {
-    let newTask = new Task(jsonObject["id"], jsonObject["name"]);
-    newTask.previousTaskId = jsonObject["previousTaskId"];
-    newTask.date = new ElementDate(jsonObject["date"]["month"], jsonObject["date"]["day"]);
-    newTask.afterPreviousDays = jsonObject["afterPreviousDays"];
-    newTask.doneDates = {};
-    Object.entries(JSON.parse(jsonObject["doneDates"])).forEach(
-      ([year, dateString]) => newTask.doneDates[parseInt(year)] = new Date(dateString as string));
-    return newTask;
-  }
-
-  toJSON(): {} {
-    return {
-      "id": this._id,
-      "name": this._name,
-      "previousTaskId": this.previousTaskId,
-      "date": this.date.toJSON(),
-      "afterPreviousDays": this.afterPreviousDays,
-      "doneDates": JSON.stringify(this.doneDates)
-    };
   }
 }

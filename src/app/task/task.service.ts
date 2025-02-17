@@ -70,10 +70,10 @@ export class TaskService extends ElementService<Task> {
   }
 
   saveElementsToLocalStorage(): void {
-    this.storageService.saveTasksToLocalStorage(this.elements);
+    this.storageService.saveToLocalStorage(this.elements);
   }
 
   loadElementsFromLocalStorage(): Task[] {
-    return this.storageService.loadTasksFromLocalStorage();
+    return this.storageService.loadFromLocalStorage("task") as Task[];
   }
 }
