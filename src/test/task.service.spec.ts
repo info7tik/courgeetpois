@@ -32,7 +32,7 @@ describe("task service tests", () => {
     service.addElement(secondTask);
     service.addElement(thirdTask);
     service.addElement(firstTask);
-    service.getSortedTasksWithPreviousTasksBefore();
+    service.getElements();
     const sortedTasks = service.getElements();
     expect(sortedTasks[0]).toEqual(firstTask);
     expect(sortedTasks[1]).toEqual(secondTask);

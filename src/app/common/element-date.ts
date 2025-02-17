@@ -1,10 +1,12 @@
+import { dateData } from "./date-data.type";
+
 export class ElementDate {
   private _month: number;
   private _day: number;
 
-  constructor(data: { [type: string]: number; }) {
-    this._month = data["month"];
-    this._day = data["day"];
+  constructor(month: number, day: number) {
+    this._month = month;
+    this._day = day;
   }
 
   get month(): number {
@@ -15,7 +17,7 @@ export class ElementDate {
     return this._day;
   }
 
-  toJSON(): {} {
+  toJSON(): dateData {
     return { "month": this._month, "day": this._day };
   }
 };
