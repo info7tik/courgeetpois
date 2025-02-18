@@ -8,7 +8,15 @@ export class Crop extends Element {
   isTransplanting: boolean = false;
   transplantingDate: ElementDate = new ElementDate(Constants.NO_TASK_DATE.month, Constants.NO_TASK_DATE.day);
 
-  constructor(id: number, name: string) {
-    super(id, name, "crop");
+  constructor(id: number) {
+    super(id, "crop");
+  }
+
+  copyAttributes(crop: Crop) {
+    this.name = crop.name;
+    this.isSowing = crop.isSowing;
+    this.sowingDate = crop.sowingDate;
+    this.isTransplanting = crop.isTransplanting;
+    this.transplantingDate = crop.transplantingDate;
   }
 }

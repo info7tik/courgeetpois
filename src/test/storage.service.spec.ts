@@ -42,7 +42,7 @@ describe("storage service tests", () => {
     expect(loadedCrops[0].isTransplanting).toBeFalse();
     expect(loadedCrops[1].sowingDate.month).toBe(crops[1].sowingDate.month);
     expect(loadedCrops[1].sowingDate.day).toBe(crops[1].sowingDate.day);
-    expect(loadedCrops[1].transplantingDate.month).toBe(crops[1].sowingDate.month);
-    expect(loadedCrops[1].transplantingDate.day).toBe(crops[1].sowingDate.day);
+    expect(loadedCrops[1].transplantingDate.month).toBe(crops[1].transplantingDate.month);
+    expect(loadedCrops[1].transplantingDate.day).toBe(crops[1].transplantingDate.day);
   });
 });

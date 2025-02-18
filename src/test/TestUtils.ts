@@ -4,7 +4,7 @@ import { Task } from "../app/task/task";
 
 export class TestUtils {
   createTask(id: number, dateMonth: number, dateDay: number, previousTaskId?: number): Task {
-    let result = new Task(id, `name${id}`);
+    let result = new Task(id);
     result.date = new ElementDate(dateMonth, dateDay);
     if (previousTaskId !== undefined) {
       result.previousTaskId = previousTaskId;
@@ -13,7 +13,7 @@ export class TestUtils {
   }
 
   createCrop(id: number, isSowing: boolean, isTransplanting: boolean): Crop {
-    let result = new Crop(id, `name${id}`);
+    let result = new Crop(id);
     if (isSowing) {
       result.isSowing = true;
       result.sowingDate = new ElementDate(this.generateRandomMonth(), this.generateRandomDay());

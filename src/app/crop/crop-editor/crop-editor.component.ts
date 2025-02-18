@@ -14,7 +14,7 @@ export class CropEditorComponent extends Editor<Crop> {
   @ViewChild("transplanting") transplantingDate!: AnnualDateComponent;
   @ViewChild("sowing") sowingDate!: AnnualDateComponent;
 
-  selectedCropId: string = "";
+  selectedCropId: number = Constants.NO_SELECTED_ID;
   cropName: string = "";
   isSowing: boolean = false;
   isTransplanting: boolean = false;
@@ -25,17 +25,17 @@ export class CropEditorComponent extends Editor<Crop> {
 
   addCrop(): void {
     try {
-      const newCrop = new Crop(this.cropService.getNewId(), this.cropName);
+      const newCrop = new Crop(this.cropService.getNewId());
       this.fillCropAttributes(newCrop);
       this.add(newCrop);
     } catch (error) {
       this.showExceptionMessage(error);
     }
-  }
+  };
 
   updateCrop(): void {
     try {
-      const toUpdateCrop = new Crop(this.selectedElementId, this.cropName);
+      const toUpdateCrop = new Crop(this.selectedElementId);
       this.fillCropAttributes(toUpdateCrop);
       this.update(toUpdateCrop);
     } catch (error) {
@@ -43,22 +43,35 @@ export class CropEditorComponent extends Editor<Crop> {
     }
   }
 
-  private fillCropAttributes(newCrop: Crop) {
-    newCrop.isSowing = this.isSowing;
-    newCrop.isTransplanting = this.isTransplanting;
+  private fillCropAttributes(crop: Crop) {
+    crop.name = this.cropName;
+    crop.isSowing = this.isSowing;
+    crop.isTransplanting = this.isTransplanting;
+    if (crop.isSowing) {
+      crop.sowingDate = this.sowingDate.getDate();
+    }
+    if (crop.isTransplanting) {
+      crop.transplantingDate = this.transplantingDate.getDate();
+    }
   }
 
   loadCrop(element: Crop): void {
+    console.log(this.sowingDate);
     this.selectedElementId = element.id;
     this.cropName = element.name;
     this.isSowing = element.isSowing;
     this.isTransplanting = element.isTransplanting;
+    if (this.isSowing) {
+      this.sowingDate.day = element.sowingDate.day;
+      this.sowingDate.month = element.sowingDate.month;
+    }
+    if (this.isTransplanting) {
+      this.transplantingDate.day = element.transplantingDate.day;
+      this.transplantingDate.month = element.transplantingDate.month;
+    }
   }
 
   protected override clearForm(): void {
     this.selectedElementId = Constants.NO_SELECTED_ID;
-    this.cropName = "";
-    this.isSowing = false;
-    this.isTransplanting = false;
   }
 }

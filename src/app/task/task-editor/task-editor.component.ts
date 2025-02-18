@@ -25,7 +25,8 @@ export class TaskEditorComponent extends Editor<Task> {
 
   addTask(): void {
     try {
-      const newTask = new Task(this.taskService.getNewId(), this.taskName);
+      const newTask = new Task(this.taskService.getNewId());
+      newTask.name = this.taskName;
       this.fillTaskAttributes(newTask);
       this.add(newTask);
     } catch (error) {
@@ -35,7 +36,8 @@ export class TaskEditorComponent extends Editor<Task> {
 
   updateTask(): void {
     try {
-      const toUpdateTask = new Task(this.selectedElementId, this.taskName);
+      const toUpdateTask = new Task(this.selectedElementId);
+      toUpdateTask.name = this.taskName;
       this.fillTaskAttributes(toUpdateTask);
       this.update(toUpdateTask);
     } catch (error) {

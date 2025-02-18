@@ -74,6 +74,8 @@ export class TaskService extends ElementService<Task> {
   }
 
   loadElementsFromLocalStorage(): Task[] {
-    return this.storageService.loadFromLocalStorage("task") as Task[];
+    const tasks = this.storageService.loadFromLocalStorage("task") as Task[];
+    console.log(`${tasks.length} tasks loaded`);
+    return tasks;
   }
 }

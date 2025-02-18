@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ElementDate } from '../common/element-date';
 
 @Component({
@@ -7,12 +7,13 @@ import { ElementDate } from '../common/element-date';
   styleUrl: './annual-date.component.css'
 })
 export class AnnualDateComponent {
+  @Input({ required: true }) disabled!: boolean;
   month: number = 0;
   day: number = 0;
 
   getDate(): ElementDate {
     if (this.hasTaskDate()) {
-      return new ElementDate(this.month - 1, this.day);
+      return new ElementDate(this.month, this.day);
     }
     throw Error(`date mal définie: mois:${this.month}, jour:${this.day}`);
   }
@@ -22,7 +23,7 @@ export class AnnualDateComponent {
   }
 
   load(month: number, day: number) {
-    this.month = month + 1;
+    this.month = month;
     this.day = day;
   }
 

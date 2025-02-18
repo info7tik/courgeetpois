@@ -9,8 +9,8 @@ export class Task extends Element {
   fullDate: Date = new Date();
   doneDates: { [year: number]: Date; } = {};
 
-  constructor(id: number, name: string) {
-    super(id, name, "task");
+  constructor(id: number) {
+    super(id, "task");
   }
 
   isBeginningTask(): boolean {
@@ -18,7 +18,7 @@ export class Task extends Element {
   }
 
   hasDate(): boolean {
-    return this.date.month >= 0 && this.date.day > 0;
+    return this.date.isComplete();
   }
 
   markAsDone() {
@@ -39,9 +39,7 @@ export class Task extends Element {
     }
     if (this.isBeginningTask()) {
       if (this.hasDate()) {
-        let fullDate = new Date();
-        fullDate.setMonth(this.date.month, this.date.day);
-        this.fullDate = fullDate;
+        this.fullDate = this.date.toDate();
       } else {
         throw Error(`Wrong date format month:${this.date.month}, day:${this.date.day}`);
       }

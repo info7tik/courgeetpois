@@ -1,10 +1,14 @@
+import { Element } from "../app/common/element";
+import { ElementType } from "../app/common/element.type";
 import { StorageService } from "../app/common/storage.service";
-import { Task } from "../app/task/task";
 
 export class MockStorageService extends StorageService {
-  private tasks: Task[] = [];
+  private elements: Element[] = [];
 
-  override saveToLocalStorage(tasks: Task[]): void {
-    this.tasks = tasks;
+  override saveToLocalStorage(elements: Element[]): void {
+    this.elements = elements;
+  }
+  override loadFromLocalStorage(type: ElementType): Element[] {
+    return this.elements;
   }
 }

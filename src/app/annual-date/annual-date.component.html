@@ -1,5 +1,4 @@
-<label>Date:</label>
 <label for="taskMonth">Mois</label>
-<input type="number" id="month" min="1" max="12" [(ngModel)]="month" name="taskMonth">
+<input type="number" id="month" min="1" max="12" [(ngModel)]="month" name="taskMonth" [disabled]="disabled">
 <label for="taskDay">Jour</label>
-<input type="number" id="day" min="1" max="31" [(ngModel)]="day" name="taskDay">
+<input type="number" id="day" min="1" max="31" [(ngModel)]="day" name="taskDay" [disabled]="disabled">

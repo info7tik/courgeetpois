@@ -29,9 +29,9 @@ export class JSONSerializerService {
       "name": crop.name,
       "type": crop.type,
       "isSowing": crop.isSowing,
-      "sowingDate": crop.sowingDate.toJSON(),
+      "sowingDate": this.dumpDate(crop.sowingDate),
       "isTransplanting": crop.isTransplanting,
-      "transplantingDate": crop.transplantingDate.toJSON()
+      "transplantingDate": this.dumpDate(crop.transplantingDate)
     };
   }
 
@@ -41,10 +41,14 @@ export class JSONSerializerService {
       "name": task.name,
       "type": task.type,
       "previousTaskId": task.previousTaskId,
-      "date": task.date.toJSON(),
+      "date": this.dumpDate(task.date),
       "afterPreviousDays": task.afterPreviousDays,
       "doneDates": JSON.stringify(task.doneDates)
     };
+  }
+
+  private dumpDate(date: ElementDate) {
+    return { "month": date.month, "day": date.day };
   }
 
   load(elementData: {}): Element {
@@ -62,14 +66,22 @@ export class JSONSerializerService {
   }
 
   private loadCrop(JSONCrop: any): Crop {
-    let crop = new Crop(JSONCrop.id, JSONCrop.name);
+    let crop = new Crop(JSONCrop.id);
+    crop.name = JSONCrop.name;
     crop.isSowing = JSONCrop.isSowing;
+    if (crop.isSowing) {
+      crop.sowingDate = new ElementDate(JSONCrop.sowingDate.month, JSONCrop.sowingDate.day);
+    }
     crop.isTransplanting = JSONCrop.isTransplanting;
+    if (crop.isTransplanting) {
+      crop.transplantingDate = new ElementDate(JSONCrop.transplantingDate.month, JSONCrop.transplantingDate.day);
+    }
     return crop;
   }
 
   private loadTask(jsonObject: any): Task {
-    let newTask = new Task(jsonObject.id, jsonObject.name);
+    let newTask = new Task(jsonObject.id);
+    newTask.name = jsonObject.name;
     newTask.previousTaskId = jsonObject.previousTaskId;
     newTask.date = new ElementDate(jsonObject.date.month, jsonObject.date.day);
     newTask.afterPreviousDays = jsonObject.afterPreviousDays;

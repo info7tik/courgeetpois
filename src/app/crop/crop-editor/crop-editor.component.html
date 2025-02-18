@@ -2,22 +2,16 @@
   <h2>Ajout de plantes</h2>
   <div>
     <label>Nom de la plante :</label>
-    <input type="text" [(ngModel)]="cropName" required>
+    <input type="text" [(ngModel)]="this.cropName" required>
   </div>
-  <div> <input type="checkbox" [(ngModel)]="isSowing">
-    <label>Semis</label>
-    <div *ngIf="isSowing">
-      <label>Date du semis :</label>
-      <app-annual-date #sowing></app-annual-date>
-    </div>
+  <div> <input type="checkbox" [(ngModel)]="this.isSowing">
+    <label>Semis : </label>
+    <app-annual-date #sowing [disabled]="!this.isSowing"></app-annual-date>
   </div>
   <div>
-    <input type="checkbox" [(ngModel)]="isTransplanting">
-    <label>Repiquage</label>
-    <div *ngIf="isTransplanting">
-      <label>Date du repiquage :</label>
-      <app-annual-date #transplanting></app-annual-date>
-    </div>
+    <input type="checkbox" [(ngModel)]="this.isTransplanting">
+    <label>Repiquage : </label>
+    <app-annual-date #transplanting [disabled]="!this.isTransplanting"></app-annual-date>
   </div>
   <button *ngIf="isNewElement()" (click)="addCrop()">Ajouter</button>
   <button *ngIf="!isNewElement()" (click)="updateCrop()">Modifier</button>

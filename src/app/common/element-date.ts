@@ -1,4 +1,3 @@
-import { dateData } from "./date-data.type";
 
 export class ElementDate {
   private _month: number;
@@ -17,7 +16,13 @@ export class ElementDate {
     return this._day;
   }
 
-  toJSON(): dateData {
-    return { "month": this._month, "day": this._day };
+  isComplete(): boolean {
+    return this._month >= 0 && this._day > 0;
+  }
+
+  toDate(): Date {
+    let fullDate = new Date();
+    fullDate.setMonth(this._month - 1, this.day);
+    return fullDate;
   }
 };

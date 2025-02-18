@@ -14,7 +14,7 @@
     </select>
   </div>
   <div *ngIf="this.previousTaskId === this.NO_SELECTED_TASK_ID">
-    <app-annual-date></app-annual-date>
+    <app-annual-date [disabled]="false"></app-annual-date>
   </div>
   <div *ngIf="this.previousTaskId !== this.NO_SELECTED_TASK_ID">
     <label>Durée après la tâche précédente (en jours):</label>

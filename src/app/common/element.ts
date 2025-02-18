@@ -2,21 +2,17 @@ import { ElementType } from "./element.type";
 
 export abstract class Element {
   protected _id: number;
-  protected _name: string;
   protected _type: ElementType;
+  public name: string;
 
-  constructor(identifier: number, name: string, type: ElementType) {
+  constructor(identifier: number, type: ElementType) {
     this._id = identifier;
-    this._name = name;
     this._type = type;
+    this.name = "";
   };
 
   get id(): number {
     return this._id;
-  }
-
-  get name(): string {
-    return this._name;
   }
 
   get type(): ElementType {
