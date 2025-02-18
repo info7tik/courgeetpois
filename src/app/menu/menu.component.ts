@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { StorageService } from '../common/storage.service';
 
 @Component({
   selector: 'app-menu',
@@ -9,12 +8,7 @@ import { StorageService } from '../common/storage.service';
 export class MenuComponent {
   showMenu = false;
 
-  constructor(private storageService: StorageService) { }
   toggleMenu() {
     this.showMenu = !this.showMenu;
-  }
-
-  deleteLocalStorage() {
-    this.storageService.deleteAllStoredInformation();
   }
 }

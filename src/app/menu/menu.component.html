@@ -1,4 +1,4 @@
-<button (click)="toggleMenu()">{{ showMenu ? 'Cacher' : 'Montrer' }} Menu</button>
+<button style="margin-bottom: 1rem;" (click)="toggleMenu()">{{ showMenu ? 'Cacher' : 'Montrer' }} Menu</button>
 
 <nav [class.show]="showMenu">
   <ul>
@@ -7,7 +7,8 @@
     <hr>
     <li><a routerLink="/crop-editor" (click)="toggleMenu()">Ajout de plantes</a></li>
     <li><a routerLink="/task-editor" (click)="toggleMenu()">Ajout de tâches</a></li>
-    <li><a (click)="deleteLocalStorage()">Tout supprimer</a></li>
+    <hr>
+    <li><a href="/data-manager" (click)="toggleMenu()">Gestion des données locales</a></li>
   </ul>
 </nav>
 <router-outlet></router-outlet>
