@@ -1,10 +1,16 @@
 <div class="section">
   <div class="title">Exporter les données</div>
-  <button>Exporter</button>
+  <button (click)="exportJson()">Exporter</button>
 </div>
 <div class="section">
   <div class="title">Importer les données</div>
-  <input type="file">
+  <form (ngSubmit)="saveJSONFile()">
+    <div>
+      <label for="fileInput">Sélectionner le fichier JSON:</label><br />
+      <input id="fileInput" type="file" (change)="onFileSelected($event)" accept=".json" />
+    </div>
+    <button type="submit" style="margin-top: 10px;">Importer</button>
+  </form>
 </div>
 <div class="section">
   <div class="title">Effacer définitivement les données</div>

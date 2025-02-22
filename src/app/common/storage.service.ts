@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Element } from './element';
-import { ElementType } from './element.type';
+import { ElementType, elementTypeValues } from './element.type';
 import { JSONSerializerService } from './json-serializer.service';
 
 @Injectable({
@@ -32,5 +32,27 @@ export class StorageService {
     });
     Object.keys(sortedByType)
       .forEach(type => localStorage.setItem(type, JSON.stringify(this.JSONSerializer.dumpAll(sortedByType[type]))));
+  }
+
+  export(): string {
+    const result: { [type: string]: {}; } = {};
+    for (const type of elementTypeValues) {
+      const jsonValue = localStorage.getItem(type);
+      if (jsonValue) {
+        result[type] = JSON.parse(jsonValue);
+      }
+    }
+    return JSON.stringify(result);
+  }
+
+  import(jsonData: { [type: string]: {}; }): void {
+    const jsonKeys = Object.keys(jsonData);
+    if (jsonKeys.every(key => elementTypeValues.includes(key))) {
+      jsonKeys.forEach(key => localStorage.setItem(key, JSON.stringify(jsonData[key])));
+    } else {
+      const invalidKeys = jsonKeys.filter(key => !elementTypeValues.includes(key));
+      throw new Error(
+        `impossible de charger le fichier JSON: le fichier contient les clés inconnues suivantes: ${invalidKeys}`);
+    }
   }
 }

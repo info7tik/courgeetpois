@@ -45,4 +45,25 @@ describe("storage service tests", () => {
     expect(loadedCrops[1].transplantingDate.month).toBe(crops[1].transplantingDate.month);
     expect(loadedCrops[1].transplantingDate.day).toBe(crops[1].transplantingDate.day);
   });
+
+  it("export data to JSON", () => {
+    const service = new StorageService(new JSONSerializerService());
+    const tasks = [utils.createTask(1, 0, 13), utils.createTask(2, 1, 15),];
+    service.saveToLocalStorage(tasks);
+    const crops = [utils.createCrop(3, true, false)];
+    service.saveToLocalStorage(crops);
+    const exported = service.export();
+    expect(Object.keys(exported).includes("crop")).toBeTruthy();
+    expect(Object.keys(exported).includes("task")).toBeTruthy();
+  });
+
+  it("import data from JSON", () => {
+    const service = new StorageService(new JSONSerializerService());
+    const tasks = [utils.createTask(1, 0, 13), utils.createTask(2, 1, 15),];
+    const jsonTasks = new JSONSerializerService().dumpAll(tasks);
+    service.deleteAllStoredInformation();
+    service.import({ "task": jsonTasks });
+    const loadedTasks = service.loadFromLocalStorage("task");
+    expect(loadedTasks.length).toBe(tasks.length);
+  });
 });
